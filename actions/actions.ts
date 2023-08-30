@@ -5,7 +5,7 @@ import db from "@/lib/db";
 export async function searchProduct(name: string) {
   try {
     return db.product.findMany({
-      take: 5,
+      // take: 3,
       where: { name: { contains: name } },
     });
   } catch (e) {
@@ -32,5 +32,12 @@ export async function getAreaBySector({ seccd }: { seccd: number }) {
     return db.area.findMany({ where: { seccd } });
   } catch (e) {
     return { message: "There was an error." };
+  }
+}
+export async function  getUserbyDistributor(){
+  try{
+    return db.user.findMany();
+  }catch (e){
+    return{massage: "there was an error"}
   }
 }

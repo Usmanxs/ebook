@@ -1,84 +1,70 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
-import { getAreaBySector, getSectors, getdistribor, searchProduct } from "@/actions/actions";
-import { LoginCard } from "@/components/login";
-import { SelectInput } from "@/components/SelectInput";
-import { v4 } from "uuid";
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getdistribor } from '@/actions/actions';
+
+interface Distributor {
+  name: string;
+  code: number;
+}
 
 export default function Home() {
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState<any>([]);
-  const [sectors, setSectors] = useState<any>([]);
-  const [area, setArea] = useState<any>([]);
-  const [seccd, setSeccd] = useState(null);
-  const [cart, setCart] = useState<any>([]);
-  const [distributor, setDistributor] = useState<any>([]); 
-  useEffect(() => {
-    if (loading) return;
+  const [selectedDistributor, setSelectedDistributor] = useState<number | ''>('');
+  const [distributorOptions, setDistributorOptions] = useState<Distributor[]>([]);
+  const router = useRouter();
 
-    if (search.length > 3) {
-      setLoading(true);
-      searchProduct(search).then((products) => {
-        setLoading(false);
-        setProducts(products);
-        // console.log(products);
-      });
-    } else {
-      setProducts([]);
+  const handleDistributorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedDistributorCode = parseInt(event.target.value, 10);
+    setSelectedDistributor(selectedDistributorCode);
+  };
+
+  const handleLogin = () => {
+    if (selectedDistributor) {
+      // Redirect to the login page with selected distributor code as query parameter
+      router.push(`/login?distCode=${selectedDistributor}`, undefined, );
     }
-  }, [search]);
+  };
 
-  useEffect(() => {
-    getSectors().then((backendSectors: any) => {
-      setSectors(
-        backendSectors.map((s: any) => ({ seccd: s.seccd, name: s.name }))
-      );
-    });
-  }, []);
-
-  useEffect(() => {
-    if (seccd) {
-      getAreaBySector({ seccd }).then((area) => {
-        console.log(area);
-      });
-    }
-  }, [seccd]);
   useEffect(() => {
     getdistribor().then((backdistributor: any) => {
-      setDistributor(
-        backdistributor.map((s: any) => ({ name: s.name }))
-      );
+      const distributorData: Distributor[] = backdistributor.map((s: any) => ({ name: s.name, code: s.dist_code }));
+      setDistributorOptions(distributorData);
     });
-    console.log (distributor)
   }, []);
 
-  const handleDistributorSelect = () => {
-    
-  };
   return (
-     
-    <main className="flex justify-center items-center h-screen">
-    <div className="w-1/2 bg-white p-8 rounded shadow-md">
-      <h1 className="text-2xl align-middle font-bold mb-4">Select Distributor</h1>
-      
-      <select className="w-full p-2 border rounded">
-        <option value="" >Select your distributor</option>
-        {distributor.map((dist:any, index:number) => (
-          <option key={index} value={dist.name}>
-            {dist.name}
-          </option>
-        ))}
-      </select>
-      
+    <main className='flex justify-center mt-44'>
+
+    <div className="container mx-auto px-4 py-8 text-center">
+      <h1 className="text-2xl font-semibold mb-4">Select Distributor</h1>
+      <div className="py-4">
+        <label htmlFor="distributor" className="block text-gray-600 font-medium mb-2">
+          Select Distributor:
+        </label>
+        <select
+          id="distributor"
+          onChange={handleDistributorChange}
+          value={selectedDistributor}
+          className="p-2 border rounded w-full"
+          >
+          <option value="">Select...</option>
+          {distributorOptions.map((dist) => (
+            <option key={dist.code} value={dist.code}>
+              {dist.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <button
-        className="mt-4 flex justify-center bg-slate-500 hover:bg-slate-600 text-white py-2 px-4 rounded"
-        onClick={handleDistributorSelect}
-      >
-        Continue
+        type="button"
+        onClick={handleLogin}
+        className={`w-full p-2 bg-slate-900 text-white rounded ${selectedDistributor ? '' : 'opacity-50 cursor-not-allowed'}`}
+        disabled={!selectedDistributor}
+        >
+        Go to Login
       </button>
     </div>
-  </main>
-);
+        </main>
+  );
 }

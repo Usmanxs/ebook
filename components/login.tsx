@@ -11,39 +11,56 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import React from 'react';
 
-export function LoginCard() {
+interface LoginCardProps {
+  username: string;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  loginError: boolean;
+  handleLogin: () => void;
+}
+
+export function LoginCard({
+  username,
+  setUsername,
+  password,
+  setPassword,
+  loginError,
+  handleLogin,
+}: LoginCardProps) {
   return (
-    <Card className="w-1/2">
-      <CardHeader className="space-y-1" >
-        <CardTitle className="text-2xl">Login account</CardTitle>
-        <CardDescription>
-          Enter your email below to create your account
-        </CardDescription>
-      </CardHeader>
+    <Card className=" m-4 p-2">
+      {/* ... Other card content ... */}
       <CardContent className="grid gap-4">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
+        {/* ... Other card content ... */}
+        <div className="grid gap-2 mt-4">
+          <Label htmlFor="username">USERNAME</Label>
+          <Input
+            id="username"
+            type="tex"
+            placeholder="ENTER YOUR USERNAME "
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" />
-        </div>
-        <div className="grid gap-2">
+        <div className="grid gap-2 mt-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="*******"
+          />
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Login</Button>
+        <Button className="w-full" onClick={handleLogin}>
+          Login
+        </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
