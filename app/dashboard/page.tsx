@@ -12,7 +12,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { getdistribor, searchProduct, getSectors, getAreaBySector } from '@/actions/actions';
 import { Button } from '@/components/ui/button';
-import { Value } from '@radix-ui/react-select';
 
 interface Distributor {
   name: string;
