@@ -1,78 +1,140 @@
 "use client";
-
-import { LoginCard } from "@/components/login";
-import { SelectInput } from "@/components/SelectInput";
-import { v4 } from "uuid";
-
-import React, { useState } from "react";
+import { useForm } from "@mantine/form";
+import {
+  TextInput,
+  PasswordInput,
+  Text,
+  Paper,
+  PaperProps,
+  Button,
+  Autocomplete,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import { getDistributers, login, me } from "../actions/actions";
 import { useRouter } from "next/navigation";
-import { getUserbyDistributor } from "@/actions/actions";
 
-interface LoginPageProps {
-  query: {
-    distCode: string;
-  };
-}
-
-export default function LoginPage({ query }: LoginPageProps) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState(false);
+export default function Login() {
   const router = useRouter();
+  const [distributors, setDistributors] = useState<
+    { ID: number; dist_code: number; name: string }[]
+  >([]);
+  const [distributorMap, setDistributorMap] = useState({});
 
-  const handleLogin = async () => {
-    try {
-      const result = await getUserbyDistributor();
+  const form = useForm({
+    initialValues: {
+      dist_code: 0,
+      password: "",
+      username: "",
+      distributer: "",
+    },
 
-      if ("message" in result) {
-        setLoginError(true);
-        console.error(result.message);
-        return;
-      }
+    validate: {
+      username: (val) => (val.length > 4 ? null : "Invalid Username"),
+      password: (val) =>
+        val.length <= 2
+          ? "Password should include at least 6 characters"
+          : null,
+    },
+  });
 
-      const users = result as any[];
-      console.log(result);
-      const matchingUsers = users.filter(
-        (u) => u.dist_code === parseInt(query.distCode)
-      );
+  // when the page loads if already logged in send to home page
+  useEffect(() => {
+    me().then((result) => {
+      if (result.success && result.user) router.push("/");
+    });
+  }, []);
 
-      const user = matchingUsers.find(
-        (u) =>
-          u.username === username && u.password === password && u.active === 1
-      );
+  const handleLogin = async (loginFormData: {
+    dist_code: number;
+    password: string;
+    username: string;
+    distributer: string;
+  }) => {
+    const credentials = {
+      username: loginFormData.username,
+      password: loginFormData.password,
+      dist_code: loginFormData.dist_code,
+    };
 
-      if (user) {
-        router.push("/dashboard");
+    login(credentials).then((result) => {
+      if (result.success) {
+        router.push("/");
       } else {
-        setLoginError(true);
+        console.log(result);
       }
-    } catch (error) {
-      console.error(error);
-      setLoginError(true);
-    }
+    });
   };
+
+  useEffect(() => {
+    getDistributers().then((eDistributors) => {
+      setDistributors(eDistributors);
+      for (let d of eDistributors) {
+        setDistributorMap({ ...distributorMap, [d.name]: d.dist_code });
+      }
+    });
+  }, []);
 
   return (
-    <main className="w-full h-full">
-      <div className="mt-44 ">
-        <div className="flex justify-center flex-col">
-          <div className="text-center text-xl">
-            <h1>Login</h1>
-          </div>
-          <LoginCard
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-            loginError={loginError}
-            handleLogin={handleLogin}
+    <div>
+      <div className="w-full h-36"></div>
+      <Paper p="xl">
+        <Text size="lg" weight={500}>
+          Ebook Login
+        </Text>
+        <div className="w-full h-8"></div>
+        <form onSubmit={form.onSubmit((values) => handleLogin(values))}>
+          <Autocomplete
+            required
+            label="Distributer"
+            placeholder="distributer"
+            value={form.values.distributer}
+            data={distributors.map((e) => e.name)}
+            onChange={(value) => {
+              form.setFieldValue("distributer", value);
+              form.setFieldValue(
+                "dist_code",
+                distributors.find((e) => e.name === value)?.dist_code as any
+              );
+            }}
+            radius="md"
           />
-        </div>
-      </div>
-    </main>
+          <div className="w-full h-4"></div>
+          <TextInput
+            required
+            label="Username"
+            placeholder="username"
+            value={form.values.username}
+            onChange={(event) =>
+              form.setFieldValue("username", event.currentTarget.value)
+            }
+            radius="md"
+          />
+          <div className="w-full h-4"></div>
+          <PasswordInput
+            required
+            label="Password"
+            placeholder="Your password"
+            value={form.values.password}
+            onChange={(event: any) => {
+              form.setFieldValue("password", event.currentTarget.value);
+            }}
+            error={
+              form.errors.password &&
+              "Password should include at least 6 characters"
+            }
+            radius="md"
+          />
+
+          <div className="w-full h-8"></div>
+          <Button
+            type="submit"
+            variant="primary"
+            className="bg-black text-white"
+          >
+            Login
+          </Button>
+        </form>
+      </Paper>
+    </div>
   );
 }
-
-LoginPage.getInitialProps = ({ query }: LoginPageProps) => {
-  return { query };
-};
