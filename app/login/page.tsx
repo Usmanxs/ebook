@@ -12,8 +12,10 @@ import {
 import { useEffect, useState } from "react";
 import { getDistributers, login, me } from "../actions/actions";
 import { useRouter } from "next/navigation";
+import { error } from "console";
 
 export default function Login() {
+  const [errCredentials, setErrCredentials] = useState(false);
   const router = useRouter();
   const [distributors, setDistributors] = useState<
     { ID: number; dist_code: number; name: string }[]
@@ -32,7 +34,7 @@ export default function Login() {
       username: (val) => (val.length > 4 ? null : "Invalid Username"),
       password: (val) =>
         val.length <= 2
-          ? "Password should include at least 6 characters"
+          ? "Password should include at least 2 characters"
           : null,
     },
   });
@@ -56,13 +58,16 @@ export default function Login() {
       dist_code: loginFormData.dist_code,
     };
 
-    login(credentials).then((result) => {
-      if (result.success) {
-        router.push("/");
-      } else {
-        console.log(result);
-      }
-    });
+    login(credentials)
+      .then((result) => {
+        if (result.success) {
+          router.push("/");
+        } else {
+          setErrCredentials(true); // Set err to true when login fails
+          console.log(result);
+        }
+      })
+    
   };
 
   useEffect(() => {
@@ -97,6 +102,7 @@ export default function Login() {
               );
             }}
             radius="md"
+        
           />
           <div className="w-full h-4"></div>
           <TextInput
@@ -120,18 +126,26 @@ export default function Login() {
             }}
             error={
               form.errors.password &&
-              "Password should include at least 6 characters"
+              "Password should include at least 2 characters"
             }
             radius="md"
-          />
-
-          <div className="w-full h-8"></div>
+            />
+           { errCredentials && (
+            <div className="text-red-500">
+              Login failed. Please check your credentials.
+            </div>
+          )}
+        
+          <div className="w-full h-8">
+            
+          </div>
           <Button
             type="submit"
             variant="primary"
             className="bg-black text-white"
           >
             Login
+            
           </Button>
         </form>
       </Paper>
