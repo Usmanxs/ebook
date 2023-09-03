@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <main>
-      <div className="flex p-4 justify-between">
+      <div className="flex p-4 justify-between bg-black">
         @{user && user.username}
         <ActionIcon
           onClick={() => {
