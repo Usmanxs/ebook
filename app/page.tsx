@@ -4,6 +4,7 @@ import { logout, me } from "./actions/actions";
 import { useRouter } from "next/navigation";
 import { ActionIcon } from "@mantine/core";
 import { IconBook, IconDoorExit } from "@tabler/icons-react";
+import OrderCreate from "../compnents/OrderCreate";
 
 export default function Home() {
   const [user, setUser] = useState<any>();
@@ -35,6 +36,10 @@ export default function Home() {
       </div>
       <div className="m-4 text-center flex">
         <IconBook /> <span className="w-2 h-2"></span> Welcome to Ebook
+      </div>
+
+      <div className="">
+        <OrderCreate dist_code={user ? user.dist_code : 0}  />
       </div>
     </main>
   );
