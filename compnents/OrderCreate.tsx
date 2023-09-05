@@ -22,6 +22,13 @@ import {
 interface OrderCreateProps {
   dist_code: number; // Pass dist_code as a prop from the parent component
 }
+type Sector = {
+  seccd: number;
+  name: string;
+  // other properties...
+};
+type SelectedAreaType = number | null;
+
 
 export default function OrderCreate({ dist_code }: OrderCreateProps) {
   const [sectors, setSectors] = useState<any[]>([]);
@@ -95,7 +102,7 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
       
     }
     else{
-      return "wait working on it"
+    
     }
     // You can perform order creation logic here
     // For example, you can send a request to your server to create the order
@@ -127,8 +134,8 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             required
             label="Select Sector"
             placeholder="Select a sector"
-            value={selectedSector}
-            onChange={(value) => setSelectedSector(value)}
+            value={selectedSector !== null ? String(selectedSector) : undefined} // Ensure it's a string or undefined
+            onChange={(value) => setSelectedSector(Number(value))}
             data={sectors.map((sector) => ({
               value: sector.seccd,
               label: sector.name,
@@ -139,8 +146,8 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             required
             label="Select Area"
             placeholder="Select an area"
-            value={selectedArea}
-            onChange={(value) => setSelectedArea(value)}
+            value={selectedArea !== null ? String(selectedArea) : undefined} // Ensure it's a string or undefined
+            onChange={(value) => setSelectedArea(Number(value))}
             data={areas.map((area) => ({
               value: area.areacd,
               label: area.name,
@@ -151,8 +158,8 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             required
             label="Select Customer"
             placeholder="Select a customer"
-            value={selectedCustomer}
-            onChange={(value) => setSelectedCustomer(value)}
+            value={selectedCustomer!==null ? String(selectedCustomer):undefined}
+            onChange={(value) => setSelectedCustomer(Number(value))}
             data={customers.map((customer) => ({
               value: customer.id,
               label: customer.name,
