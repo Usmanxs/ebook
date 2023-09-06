@@ -130,7 +130,7 @@ export async function getCustumer({
 export async function searchProduct(dist_code: number, name: string) {
   try {
     return db.product.findMany({
-      take: 5,
+     
       where: {
         dist_code,
         name: { contains: name },

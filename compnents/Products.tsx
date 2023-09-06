@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Button, Input, Table, Text as MantineText } from "@mantine/core";
+import { Button, TextInput, Table, Loader, ScrollArea,Text as MantineText } from "@mantine/core";
 import { searchProduct } from "../app/actions/actions";
 
 interface ProductProps {
@@ -9,19 +9,23 @@ interface ProductProps {
 
 function Products({ dist_code }: ProductProps) {
   const [search, setSearch] = useState<string>("");
-
+  const [loader, setLoader] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [cart, setCart] = useState<any[]>([]);
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     // Fetch products based on dist_code and search query
     if (search.trim() !== "") {
-      searchProduct(dist_code, search)
-        .then((result: any) => {
-          setProducts(result);
-        })
-        .catch((error) => {
-          console.error("Error fetching products:", error);
-        });
+      searchProduct(dist_code, search) 
+      .then((result: any) => {
+        setLoader(true)
+        setProducts(result);
+        setLoader(false)
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+        setLoader(false)
+      });
     }
   });
   const AddToCart = () => {
@@ -32,18 +36,20 @@ function Products({ dist_code }: ProductProps) {
       <div className="w-full h-4"> </div>
       <div>
         <div className=" m-2">
-          <form onSubmit={AddToCart}>
+        
             <div className="flex  justify-center">
-              <Input
+              <TextInput
                 className="w-full"
                 placeholder="Search Medicine"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-              />
+                />
+                 {loader && <Loader color="dark" variant="dots"></Loader>}
             </div>
 
             <div className="overflow-x-auto ">
-              <Table striped highlightOnHover withColumnBorders>
+            <ScrollArea h={500} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+              <Table striped highlightOnHover withColumnBorders miw={450}>
                 <thead>
                   <tr>
                     <th className="border-gray-500 p-3">Product Name</th>
@@ -76,10 +82,11 @@ function Products({ dist_code }: ProductProps) {
                   ))}
                 </tbody>
               </Table>
+              </ScrollArea>
             </div>
 
             {/* ... Other form fields ... */}
-          </form>
+        
         </div>
       </div>
     </div>

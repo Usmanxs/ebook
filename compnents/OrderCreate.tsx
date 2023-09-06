@@ -78,13 +78,10 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
       selectedArea === null ||
       selectedCustomer === null
     ) {
-      alert("Please select a sector, an area, and a customer.");
+ 
+      alert( "working on it!")
     } else {
     }
-    // You can perform order creation logic here
-    // For example, you can send a request to your server to create the order
-
-    // Redirect to a confirmation page or perform other actions as needed
   };
 
   return (
