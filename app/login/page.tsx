@@ -7,12 +7,12 @@ import {
   Paper,
   PaperProps,
   Button,
+  Loader,
   Autocomplete,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getDistributers, login, me } from "../actions/actions";
 import { useRouter } from "next/navigation";
-import { error } from "console";
 
 export default function Login() {
   const [errCredentials, setErrCredentials] = useState(false);
@@ -21,6 +21,7 @@ export default function Login() {
     { ID: number; dist_code: number; name: string }[]
   >([]);
   const [distributorMap, setDistributorMap] = useState({});
+  const [loader, setLoader] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -31,14 +32,13 @@ export default function Login() {
     },
 
     validate: {
-      username: (val) => (val.length > 4 ? null : "Invalid Username"),
+      username: (val) => (val.length > 2 ? null : "Invalid Username"),
       password: (val) =>
         val.length <= 2
           ? "Password should include at least 2 characters"
           : null,
     },
   });
-
   // when the page loads if already logged in send to home page
   useEffect(() => {
     me().then((result) => {
@@ -57,17 +57,22 @@ export default function Login() {
       password: loginFormData.password,
       dist_code: loginFormData.dist_code,
     };
-
+    setLoader(true);
     login(credentials)
       .then((result) => {
         if (result.success) {
           router.push("/");
+          setLoader(false);
         } else {
           setErrCredentials(true); // Set err to true when login fails
-          console.log(result);
+          setLoader(false);
         }
       })
-    
+      .catch((error) => {
+        console.error("Error during login:", error);
+        setErrCredentials(true); // Make sure to handle errors and set loader to false if an error occurs.
+        setLoader(false);
+      });
   };
 
   useEffect(() => {
@@ -102,7 +107,6 @@ export default function Login() {
               );
             }}
             radius="md"
-        
           />
           <div className="w-full h-4"></div>
           <TextInput
@@ -129,15 +133,15 @@ export default function Login() {
               "Password should include at least 2 characters"
             }
             radius="md"
-            />
-           { errCredentials && (
+          />
+          {errCredentials && (
             <div className="text-red-500">
               Login failed. Please check your credentials.
             </div>
           )}
-        
+
           <div className="w-full h-8">
-            
+            {loader && <Loader color="dark" variant="dots"></Loader>}
           </div>
           <Button
             type="submit"
@@ -145,7 +149,6 @@ export default function Login() {
             className="bg-black text-white"
           >
             Login
-            
           </Button>
         </form>
       </Paper>

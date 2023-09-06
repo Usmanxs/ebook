@@ -93,36 +93,47 @@ export const logout = async () => {
   return { success: true };
 };
 
-export async function getSectors() {
+export async function getSectors({ dist_code }: { dist_code: number }) {
   try {
-    return db.sector.findMany();
+    return db.sector.findMany({ where: { dist_code } });
+  } catch (e) {
+    return { message: "There was an error." };
+  }
+}
+export async function getAreaBySector({
+  seccd,
+  dist_code,
+}: {
+  seccd: number;
+  dist_code: number;
+}) {
+  try {
+    return db.area.findMany({ where: { seccd, dist_code } });
   } catch (e) {
     return { message: "There was an error." };
   }
 }
 
-export async function getAreaBySector({ seccd }: { seccd: number }) {
+export async function getCustumer({
+  areacd,
+  dist_code,
+}: {
+  areacd: number;
+  dist_code: number;
+}) {
   try {
-    return db.area.findMany({ where: { seccd } });
-  } catch (e) {
-    return { message: "There was an error." };
-  }
-}
-export async function getCustumer({ areacd }: { areacd: number }) {
-  try {
-    return db.account.findMany({ where: { areacd} });
+    return db.account.findMany({ where: { areacd, dist_code } });
   } catch (e) {
     return { message: "There was an error." };
   }
 }
 export async function searchProduct(dist_code: number, name: string) {
-  try { 
+  try {
     return db.product.findMany({
-       take:5,
+      take: 5,
       where: {
-    
         dist_code,
-        name: { contains: name }
+        name: { contains: name },
       },
     });
   } catch (e) {

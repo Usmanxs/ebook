@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ActionIcon } from "@mantine/core";
 import { IconBook, IconDoorExit } from "@tabler/icons-react";
 import OrderCreate from "../compnents/OrderCreate";
+import Products from "@/compnents/Products";
 
 export default function Home() {
   const [user, setUser] = useState<any>();
@@ -39,7 +40,8 @@ export default function Home() {
       </div>
 
       <div className="">
-        <OrderCreate dist_code={user ? user.dist_code : 0}  />
+        <OrderCreate dist_code={user ? user.dist_code : 0} />
+        <Products dist_code={user ? user.dist_code : 0} />
       </div>
     </main>
   );

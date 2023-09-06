@@ -5,16 +5,13 @@ import {
   getSectors,
   getAreaBySector,
   getCustumer,
-  searchProduct,
 } from "../app/actions/actions";
 import { useRouter } from "next/router";
 
 import {
   Text,
   Paper,
-  Autocomplete,
   Button,
-  Input, Table ,
   Select,
   Text as MantineText,
 } from "@mantine/core";
@@ -29,7 +26,6 @@ type Sector = {
 };
 type SelectedAreaType = number | null;
 
-
 export default function OrderCreate({ dist_code }: OrderCreateProps) {
   const [sectors, setSectors] = useState<any[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
@@ -37,25 +33,22 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
-  const [search, setSearch] = useState<string>("");
-  const [products, setProducts] = useState<any[]>([]);
-  const [cart, setCart] = useState<any[]>([]);
 
   useEffect(() => {
     // Fetch sectors based on dist_code
-    getSectors()
+    getSectors({ dist_code }) // Pass the dist_code as a parameter
       .then((result: any) => {
         setSectors(result);
       })
       .catch((error) => {
         console.error("Error fetching sectors:", error);
       });
-  }, []);
+  }, [dist_code]);
 
   useEffect(() => {
-    // Fetch areas based on selected sector (seccd)
+    // Fetch areas based on selected sector (seccd) and dist_code
     if (selectedSector !== null) {
-      getAreaBySector({ seccd: selectedSector })
+      getAreaBySector({ seccd: selectedSector, dist_code }) // Pass both seccd and dist_code
         .then((result: any) => {
           setAreas(result);
         })
@@ -63,12 +56,12 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
           console.error("Error fetching areas:", error);
         });
     }
-  }, [selectedSector]);
+  }, [selectedSector, dist_code]); // Add both selectedSector and dist_code to the dependency array
 
   useEffect(() => {
     // Fetch customers based on selected area (areacd)
     if (selectedArea !== null) {
-      getCustumer({ areacd: selectedArea })
+      getCustumer({ areacd: selectedArea, dist_code })
         .then((result: any) => {
           setCustomers(result);
         })
@@ -78,19 +71,6 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
     }
   }, [selectedArea]);
 
-  useEffect(() => {
-    // Fetch products based on dist_code and search query
-    if (search.trim() !== "") {
-      searchProduct(dist_code, search)
-        .then((result: any) => {
-          setProducts(result);
-        })
-        .catch((error) => {
-          console.error("Error fetching products:", error);
-        });
-    }
-  });
-
   const handleCreateOrder = () => {
     // Check if a sector, area, and customer have been selected
     if (
@@ -99,27 +79,12 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
       selectedCustomer === null
     ) {
       alert("Please select a sector, an area, and a customer.");
-      
-    }
-    else{
-    
+    } else {
     }
     // You can perform order creation logic here
     // For example, you can send a request to your server to create the order
 
     // Redirect to a confirmation page or perform other actions as needed
-  };
-
-  const AddToCart = () => {
-    // Check if a sector, area, and customer have been selected
-    if (
-      selectedSector === null ||
-      selectedArea === null ||
-      selectedCustomer === null
-    ) {
-      alert("Please select a sector, an area, and a customer.");
-      return;
-    }
   };
 
   return (
@@ -134,10 +99,12 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             required
             label="Select Sector"
             placeholder="Select a sector"
-            value={selectedSector !== null ? String(selectedSector) : undefined} // Ensure it's a string or undefined
-            onChange={(value) => setSelectedSector(Number(value))}
+            value={selectedSector !== null ? String(selectedSector) : ""}
+            onChange={(value) =>
+              setSelectedSector(value !== "" ? Number(value) : null)
+            }
             data={sectors.map((sector) => ({
-              value: sector.seccd,
+              value: sector.seccd.toString(), // Ensure that value is a string
               label: sector.name,
             }))}
           />
@@ -146,20 +113,27 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             required
             label="Select Area"
             placeholder="Select an area"
-            value={selectedArea !== null ? String(selectedArea) : undefined} // Ensure it's a string or undefined
-            onChange={(value) => setSelectedArea(Number(value))}
+            value={selectedArea !== null ? String(selectedArea) : ""}
+            onChange={(value) =>
+              setSelectedArea(value !== "" ? Number(value) : null)
+            }
             data={areas.map((area) => ({
-              value: area.areacd,
+              value: area.areacd.toString(), // Ensure that value is a string
               label: area.name,
             }))}
           />
+
           <div className="w-full h-4"></div>
           <Select
             required
             label="Select Customer"
             placeholder="Select a customer"
-            value={selectedCustomer!==null ? String(selectedCustomer):undefined}
-            onChange={(value) => setSelectedCustomer(Number(value))}
+            value={
+              selectedCustomer !== null ? String(selectedCustomer) : undefined
+            }
+            onChange={(value) =>
+              setSelectedCustomer(value !== undefined ? Number(value) : null)
+            }
             data={customers.map((customer) => ({
               value: customer.id,
               label: customer.name,
@@ -168,68 +142,14 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
 
           <div className="w-full h-4"> </div>
 
-          
           <Button
-            type="submit"
             variant="primary"
-            className="bg-black text-white"
+            type="submit"
+            className="bg-black text-white  "
           >
             Create Order
           </Button>
-          
         </form>
-        <div className="w-full h-4"> </div>
-        <div >
-         
-          <div className=" m-2">
-          <form onSubmit={AddToCart}>
-            <div className="flex  justify-center">
-              <Input className="w-full"
-                placeholder="Search Medicine"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-             
-            </div>
-
-            <div className="overflow-x-auto w-full flex ">
-              < Table >
-                <thead>
-                  <tr>
-                    <th className="border-gray-500 p-3">Product Name</th>
-                    <th className="border-gray-500  p-3">Price</th>
-                    <th className="border-gray-500  p-3">Retail Price</th>
-                    <th className="border-gray-500 p-3">Available</th>
-                    <th className="border-gray-500 p-3">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((p: any) => (
-                    <tr key={p.ID}>
-                      <td className="border-b p-3">{p.name}</td>
-                      <td className="border-b p-3">{p.tp}</td>
-                      <td className="border-b p-3">{p.rp}</td>
-                      <td className="border-b p-3">{p.active}</td>
-                      <td className="border-b p-3">
-                        <button
-                          onClick={() => {
-                            setCart([...cart, p]);
-                          }}
-                          className="p-2 bg-black text-white"
-                        >
-                          + cart
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </ Table >
-            </div>
-            
-            {/* ... Other form fields ... */}
-          </form>
-          </div>
-        </div>
       </Paper>
     </main>
   );
