@@ -15,12 +15,12 @@ import { getDistributers, login, me } from "../actions/actions";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
-  const [errCredentials, setErrCredentials] = useState(false);
   const router = useRouter();
   const [distributors, setDistributors] = useState<
-    { ID: number; dist_code: number; name: string }[]
+  { ID: number; dist_code: number; name: string }[]
   >([]);
   const [distributorMap, setDistributorMap] = useState({});
+  const [errCredentials, setErrCredentials] = useState(false);
   const [loader, setLoader] = useState(false);
 
   const form = useForm({

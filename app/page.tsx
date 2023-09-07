@@ -41,7 +41,7 @@ export default function Home() {
 
       <div className="">
         <OrderCreate dist_code={user ? user.dist_code : 0} />
-        <Products dist_code={user ? user.dist_code : 0} />
+        {/* <Products dist_code={user ? user.dist_code : 0} /> */}
       </div>
     </main>
   );

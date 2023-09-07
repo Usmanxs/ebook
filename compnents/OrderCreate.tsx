@@ -1,12 +1,11 @@
-// OrderCreate.tsx
-
+// Import statements...
 import { useState, useEffect } from "react";
 import {
   getSectors,
   getAreaBySector,
   getCustumer,
 } from "../app/actions/actions";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import {
   Text,
@@ -14,73 +13,138 @@ import {
   Button,
   Select,
   Text as MantineText,
-} from "@mantine/core";
+} from "@mantine/core"; // Import statements...
 
 interface OrderCreateProps {
-  dist_code: number; // Pass dist_code as a prop from the parent component
+  dist_code: number;
 }
-type Sector = {
+
+interface Sector {
   seccd: number;
   name: string;
-  // other properties...
-};
-type SelectedAreaType = number | null;
+}
+
+interface Area {
+  areacd: number;
+  name: string;
+}
+
+interface Customer {
+  id: number;
+  name: string;
+}
 
 export default function OrderCreate({ dist_code }: OrderCreateProps) {
-  const [sectors, setSectors] = useState<any[]>([]);
-  const [areas, setAreas] = useState<any[]>([]);
-  const [customers, setCustomers] = useState<any[]>([]); // Added customers state
+  const [sectors, setSectors] = useState<Sector[]>([]);
+  const [areas, setAreas] = useState<Area[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    // Fetch sectors based on dist_code
-    getSectors({ dist_code }) // Pass the dist_code as a parameter
-      .then((result: any) => {
-        setSectors(result);
-      })
-      .catch((error) => {
+    async function fetchSectors() {
+      try {
+        const result = await getSectors({ dist_code });
+        if (Array.isArray(result)) {
+          setSectors(result);
+        } else {
+          console.error(
+            "Error fetching sectors. Received unexpected data:",
+            result
+          );
+        }
+      } catch (error) {
         console.error("Error fetching sectors:", error);
-      });
+      }
+    }
+
+    if (dist_code) {
+      fetchSectors();
+    }
   }, [dist_code]);
 
   useEffect(() => {
-    // Fetch areas based on selected sector (seccd) and dist_code
-    if (selectedSector !== null) {
-      getAreaBySector({ seccd: selectedSector, dist_code }) // Pass both seccd and dist_code
-        .then((result: any) => {
-          setAreas(result);
-        })
-        .catch((error) => {
+    async function fetchAreas() {
+      if (selectedSector !== null) {
+        try {
+          const result = await getAreaBySector({
+            seccd: selectedSector,
+            dist_code,
+          });
+          if (Array.isArray(result)) {
+            setAreas(result);
+            // Reset selected area and customer when the sector changes
+            setSelectedArea(null);
+            setSelectedCustomer(null);
+          } else {
+            console.error(
+              "Error fetching areas. Received unexpected data:",
+              result
+            );
+          }
+        } catch (error) {
           console.error("Error fetching areas:", error);
-        });
+        }
+      }
     }
-  }, [selectedSector, dist_code]); // Add both selectedSector and dist_code to the dependency array
+
+    if (selectedSector !== null) {
+      fetchAreas();
+    }
+  }, [selectedSector, dist_code]);
 
   useEffect(() => {
-    // Fetch customers based on selected area (areacd)
-    if (selectedArea !== null) {
-      getCustumer({ areacd: selectedArea, dist_code })
-        .then((result: any) => {
-          setCustomers(result);
-        })
-        .catch((error) => {
-          console.error("Error fetching customers:", error);
-        });
-    }
-  }, [selectedArea]);
+    async function fetchCustomers() {
+      if (selectedArea !== null) {
+        try {
+          const customerData = await getCustumer({
+            areacd: selectedArea,
+            dist_code,
+          });
 
-  const handleCreateOrder = () => {
-    // Check if a sector, area, and customer have been selected
+          // Check if the data is an array
+          if (Array.isArray(customerData)) {
+            const formattedCustomers: Customer[] = customerData.map((item) => ({
+              id: item.ID,
+              name: item.name,
+              // Include other properties as needed
+            }));
+            setCustomers(formattedCustomers);
+          } else {
+            // Handle the case where an error message is received
+            console.error("Error fetching customers:", customerData.message);
+            // You can set customers to an empty array or handle the error differently
+            setCustomers([]);
+          }
+        } catch (error) {
+          console.error("Error fetching customers:", error);
+        }
+      }
+    }
+
+    fetchCustomers();
+  }, [selectedArea, dist_code]);
+
+  const handleCreateOrder = (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (
       selectedSector === null ||
       selectedArea === null ||
       selectedCustomer === null
     ) {
- 
-      alert( "working on it!")
+      alert(
+        "Please select a sector, area, and customer before creating an order."
+      );
     } else {
+  
+      // Redirect to the product page with selected values as query parameters
+      // router.push(`/product?sector=${selectedSector}&area=${selectedArea}&customer=${selectedCustomer}`);
+      console.log(selectedSector, selectedArea, selectedCustomer);
+      alert("values are ok working on it")
+
     }
   };
 
@@ -97,11 +161,15 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             label="Select Sector"
             placeholder="Select a sector"
             value={selectedSector !== null ? String(selectedSector) : ""}
-            onChange={(value) =>
-              setSelectedSector(value !== "" ? Number(value) : null)
-            }
+            onChange={(value) => {
+              const newSector = value !== "" ? Number(value) : null;
+              setSelectedSector(newSector);
+              // Automatically reset the selected area and customer when sector changes
+              setSelectedArea(null);
+              setSelectedCustomer(null);
+            }}
             data={sectors.map((sector) => ({
-              value: sector.seccd.toString(), // Ensure that value is a string
+              value: String(sector.seccd),
               label: sector.name,
             }))}
           />
@@ -115,11 +183,11 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
               setSelectedArea(value !== "" ? Number(value) : null)
             }
             data={areas.map((area) => ({
-              value: area.areacd.toString(), // Ensure that value is a string
+              value: String(area.areacd),
               label: area.name,
             }))}
+            disabled={!selectedSector}
           />
-
           <div className="w-full h-4"></div>
           <Select
             required
@@ -132,17 +200,22 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
               setSelectedCustomer(value !== undefined ? Number(value) : null)
             }
             data={customers.map((customer) => ({
-              value: customer.id,
+              value: String(customer.id),
               label: customer.name,
             }))}
+            disabled={!selectedArea} // Make sure it's enabled when selectedArea is not null
           />
 
           <div className="w-full h-4"> </div>
-
           <Button
             variant="primary"
             type="submit"
-            className="bg-black text-white  "
+            className="bg-black text-white"
+            disabled={
+              selectedSector === null ||
+              selectedArea === null ||
+              selectedCustomer === null
+            }
           >
             Create Order
           </Button>
