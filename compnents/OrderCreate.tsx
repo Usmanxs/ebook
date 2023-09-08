@@ -5,7 +5,7 @@ import {
   getAreaBySector,
   getCustumer,
 } from "../app/actions/actions";
-import { useRouter } from "next/navigation";
+import { useRouter ,} from "next/navigation";
 
 import {
   Text,
@@ -42,6 +42,8 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
   const router = useRouter();
+
+
 
   useEffect(() => {
     async function fetchSectors() {
@@ -139,12 +141,20 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
         "Please select a sector, area, and customer before creating an order."
       );
     } else {
-  
-      // Redirect to the product page with selected values as query parameters
-      // router.push(`/product?sector=${selectedSector}&area=${selectedArea}&customer=${selectedCustomer}`);
-      console.log(selectedSector, selectedArea, selectedCustomer);
-      alert("values are ok working on it")
+      const areaName = areas.find((area) => area.areacd === selectedArea)?.name;
 
+      // Access the selected sector's name
+      const sectorName = sectors.find(
+        (sector) => sector.seccd === selectedSector
+      )?.name;
+
+      // Access the selected customer's name
+      const customerName = customers.find(
+        (customer) => customer.id === selectedCustomer
+      )?.name;
+      const query = sectorName ? `?${sectorName}` : "";
+      // Log the selected names
+       router.push('/Products');
     }
   };
 
@@ -179,9 +189,11 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
             label="Select Area"
             placeholder="Select an area"
             value={selectedArea !== null ? String(selectedArea) : ""}
-            onChange={(value) =>
-              setSelectedArea(value !== "" ? Number(value) : null)
-            }
+            onChange={(value) => {
+              const newArea = value !== "" ? Number(value) : null;
+              setSelectedArea(newArea);
+              setSelectedCustomer(null);
+            }}
             data={areas.map((area) => ({
               value: String(area.areacd),
               label: area.name,

@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import { logout, me } from "./actions/actions";
 import { useRouter } from "next/navigation";
-import { ActionIcon } from "@mantine/core";
-import { IconBook, IconDoorExit } from "@tabler/icons-react";
-import OrderCreate from "../compnents/OrderCreate";
-import Products from "@/compnents/Products";
+import { useFullscreen } from "@mantine/hooks";
 
+import OrderCreate from "../compnents/OrderCreate";
+
+import Header from "@/compnents/Header";
 export default function Home() {
   const [user, setUser] = useState<any>();
   const router = useRouter();
@@ -20,26 +20,13 @@ export default function Home() {
       }
     });
   }, []);
+  const { toggle, fullscreen } = useFullscreen();
 
   return (
     <main>
-      <div className="flex p-4 justify-between bg-black">
-        @{user && user.username}
-        <ActionIcon
-          onClick={() => {
-            logout();
-            router.push("/login");
-          }}
-          variant="filled"
-        >
-          <IconDoorExit size="1rem" />
-        </ActionIcon>
-      </div>
-      <div className="m-4 text-center flex">
-        <IconBook /> <span className="w-2 h-2"></span> Welcome to Ebook
-      </div>
-
       <div className="">
+        <Header />
+      
         <OrderCreate dist_code={user ? user.dist_code : 0} />
         {/* <Products dist_code={user ? user.dist_code : 0} /> */}
       </div>

@@ -16,10 +16,11 @@ function Products({ dist_code }: ProductProps) {
   useEffect(() => {
     // Fetch products based on dist_code and search query
     if (search.trim() !== "") {
-      searchProduct(dist_code, search) 
+      setLoader(true)
+      searchProduct( search) 
       .then((result: any) => {
-        setLoader(true)
         setProducts(result);
+        console.log(result)
         setLoader(false)
       })
       .catch((error) => {
@@ -27,13 +28,14 @@ function Products({ dist_code }: ProductProps) {
         setLoader(false)
       });
     }
-  });
+  },[search]);
+ 
   const AddToCart = () => {
     // Check if a sector, area, and customer have been selected
   };
   return (
     <div>
-      <div className="w-full h-4"> </div>
+      <div className="w-98 h-6"> </div>
       <div>
         <div className=" m-2">
         
@@ -44,11 +46,11 @@ function Products({ dist_code }: ProductProps) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 />
-                 {loader && <Loader color="dark" variant="dots"></Loader>}
+                {loader && <Loader color="dark" variant="dots"></Loader>}
             </div>
 
             <div className="overflow-x-auto ">
-            <ScrollArea h={500} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+            <ScrollArea h={600} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
               <Table striped highlightOnHover withColumnBorders miw={450}>
                 <thead>
                   <tr>

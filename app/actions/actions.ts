@@ -127,12 +127,12 @@ export async function getCustumer({
     return { message: "There was an error." };
   }
 }
-export async function searchProduct(dist_code: number, name: string) {
+export async function searchProduct( name: string) {
   try {
     return db.product.findMany({
-      take : 10,
+      take:100,
       where: {
-        dist_code,
+    
         name: { contains: name },
       },
     });
