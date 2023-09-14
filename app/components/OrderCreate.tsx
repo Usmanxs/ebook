@@ -17,6 +17,7 @@ import {
 
 interface OrderCreateProps {
   dist_code: number;
+  onCustomerNameChange:any;
 }
 
 interface Sector {
@@ -34,7 +35,7 @@ interface Customer {
   name: string;
 }
 
-export default function OrderCreate({ dist_code }: OrderCreateProps) {
+export default function OrderCreate({ dist_code,  onCustomerNameChange }: OrderCreateProps) {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -145,8 +146,7 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
        const sectorName = sectors.find((sector) => sector.seccd === selectedSector)?.name;
       const areaName = areas.find((area) => area.areacd === selectedArea)?.name;
       const customerName = customers.find((customer) => customer.id === selectedCustomer)?.name;
-      router.push('./Products')
-
+      onCustomerNameChange(customerName,customers);
     }
     
   };

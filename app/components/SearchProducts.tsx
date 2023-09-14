@@ -2,20 +2,22 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextInput, Table, Loader, ScrollArea } from "@mantine/core";
 import { searchProduct } from "../actions/actions";
-import { IconShoppingBagCheck} from "@tabler/icons-react";
+import { IconShoppingBagCheck, IconBackspace,} from "@tabler/icons-react";
 import Cart from "./Cart";
 
 interface ProductProps {
   dist_code: number; // Pass dist_code as a prop from the parent component
+  customerName:any;
+  onCustomerNameChange:any;
 }
 
-function Products({ dist_code }: ProductProps) {
+function Products({ dist_code ,customerName , onCustomerNameChange }: ProductProps) {
   const [search, setSearch] = useState<string>("");
   const [loader, setLoader] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [cart, setCart] = useState<any[]>([]);
   const [scrolled, setScrolled] = useState(false);
-
+  const [openCart,setOpenCart] = useState(false)
   // State for the pop-up dialog
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
@@ -103,12 +105,17 @@ function Products({ dist_code }: ProductProps) {
 
   return (
     <div>
-      <div className="w-98 h-6"> </div>
-       <div className="flex  justify-end mr-5">
-        <Button className="bg-black" onClick={() => console.log(cart)}><IconShoppingBagCheck> </IconShoppingBagCheck>{cart.length}</Button>
+      <div className="w-98 h-6">     <div className="p-2 flex justify-center"> {customerName}</div></div>
+      {openCart==false&&<div>
 
-      </div>
-      <div>
+       <div className="flex  justify-between m-5">
+        <Button className="bg-black m-2" onClick={() => onCustomerNameChange(null)}> <IconBackspace/></Button>
+    
+        <div><Button className="bg-black m-0" onClick={() => {setOpenCart(true)}}><IconShoppingBagCheck> </IconShoppingBagCheck>{cart.length}</Button>
+        </div>
+
+       </div>
+       <div>
         <div className="m-2">
           <div className="flex justify-center">
             <TextInput
@@ -127,7 +134,7 @@ function Products({ dist_code }: ProductProps) {
                   <tr>
                     <th className="border-gray-500 p-3">Product Name</th>
                     <th className="border-gray-500 p-3">Price</th>
-                    <th className="border-gray-500 p-3">Retail Price</th>
+                    <th className="border-gray-500 p-3">Stock</th>
                     <th className="border-gray-500 p-3">Action</th>
                   </tr>
                 </thead>
@@ -142,8 +149,8 @@ function Products({ dist_code }: ProductProps) {
                           compact
                           uppercase
                           onClick={() => openPopup(p)} // Open the pop-up dialog
-                          className="p-2 bg-black text-white"
-                        >
+                          className=" bg-black text-white"
+                          >
                           ADD
                         </Button>
                       </td>
@@ -156,8 +163,6 @@ function Products({ dist_code }: ProductProps) {
         </div>
       </div>
 
-   
-      {/* Pop-up dialog */}
       {showPopup && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-8 rounded-lg shadow-lg">
@@ -177,10 +182,10 @@ function Products({ dist_code }: ProductProps) {
             <p className="flex justify-between m-2">Discount
           <span> <input 
           className="w-12"
-              type="number"
-              placeholder="Discount"
-              value={discount}
-              onChange={(e) => setDiscount(Number(e.target.value))}
+          type="number"
+          placeholder="Discount"
+          value={discount}
+          onChange={(e) => setDiscount(Number(e.target.value))}
             /></span></p>
             <p className="flex justify-between m-2"> Bonus<span>
             <input
@@ -189,7 +194,7 @@ function Products({ dist_code }: ProductProps) {
               placeholder="Bonus"
               value={bonus}
               onChange={(e) => setBonus(Number(e.target.value))}
-            /></span></p>
+              /></span></p>
             <div className="flex justify-center mt-2">
               <Button  className="bg-black m-2"  uppercase onClick={closePopup}>Cancel</Button>
               <Button  className="bg-black m-2"   uppercase onClick={addToCart}>Submit</Button>
@@ -197,9 +202,18 @@ function Products({ dist_code }: ProductProps) {
           </div>
         </div>
       )}
-        <div className=" p-4">
-        <Cart cart={cart} updateCartItem={updateCartItem} deleteCartItem={deleteCartItem} />
+   
+      </div>}
+      {/* Pop-up dialog */}
+        
+        
+      {openCart== true && <div className=" ">
+      <div className="flex  justify-between m-5">   
+      <Button className="bg-black m-2" onClick={() => {setOpenCart(false)}}> <IconBackspace/></Button>
+      <Button className="flex justify-end m-2 bg-black">Confirm</Button>
       </div>
+        <Cart cart={cart} updateCartItem={updateCartItem} deleteCartItem={deleteCartItem} />
+      </div>}
     
     </div>
   );

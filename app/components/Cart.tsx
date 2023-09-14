@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Table,ScrollArea } from "@mantine/core";
 
 interface CartProps {
@@ -8,10 +8,23 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem }) => {
-  return (
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  useEffect(() => {
+    // Calculate the total price whenever the cart or item details change
+    const newTotalPrice = cart.reduce((total, item) => {
+      const { tp, quantity, discount, bonus } = item;
+      const totalPrice = tp * quantity;
+      const discountedPrice = totalPrice - discount;
+      const totalPriceWithBonus = discountedPrice + bonus;
+      return total + totalPriceWithBonus;
+    }, 0);
+
+    setTotalPrice(newTotalPrice);
+  }, [cart]); return (
     <div>
-      <h2>Cart</h2>
-      <ScrollArea  h={600}>
+      <h1 className="text-cente ">Cart</h1>
+      <ScrollArea  mah={600}>
 
       <Table striped highlightOnHover miw={450}>
         <thead>
@@ -74,7 +87,21 @@ const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem }) => 
         </tbody>
       </Table>
 </ScrollArea>
-      <Button className="flex justify-end m-2 bg-black">Confirm</Button>
+ <Table>
+ <thead>
+          <tr>
+            <th> Total Products</th>
+            <th>Total Price</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{cart.length}</td>
+            <td>{totalPrice.toFixed(2)}</td>
+          </tr>
+        </tbody>
+        </Table>    
     </div>
   );
 };
