@@ -4,8 +4,8 @@ import {
   getSectors,
   getAreaBySector,
   getCustumer,
-} from "../app/actions/actions";
-import { useRouter ,} from "next/navigation";
+} from "../actions/actions";
+import { useRouter } from "next/navigation";
 
 import {
   Text,
@@ -42,8 +42,6 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
   const router = useRouter();
-
-
 
   useEffect(() => {
     async function fetchSectors() {
@@ -141,21 +139,16 @@ export default function OrderCreate({ dist_code }: OrderCreateProps) {
         "Please select a sector, area, and customer before creating an order."
       );
     } else {
-      const areaName = areas.find((area) => area.areacd === selectedArea)?.name;
-
+      
       // Access the selected sector's name
-      const sectorName = sectors.find(
-        (sector) => sector.seccd === selectedSector
-      )?.name;
-
       // Access the selected customer's name
-      const customerName = customers.find(
-        (customer) => customer.id === selectedCustomer
-      )?.name;
-      const query = sectorName ? `?${sectorName}` : "";
-      // Log the selected names
-       router.push('/Products');
+       const sectorName = sectors.find((sector) => sector.seccd === selectedSector)?.name;
+      const areaName = areas.find((area) => area.areacd === selectedArea)?.name;
+      const customerName = customers.find((customer) => customer.id === selectedCustomer)?.name;
+      router.push('./Products')
+
     }
+    
   };
 
   return (

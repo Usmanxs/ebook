@@ -4,9 +4,9 @@ import { logout, me } from "./actions/actions";
 import { useRouter } from "next/navigation";
 import { useFullscreen } from "@mantine/hooks";
 
-import OrderCreate from "../compnents/OrderCreate";
-
-import Header from "@/compnents/Header";
+import OrderCreate from "./components/OrderCreate";
+import {  Paper } from '@mantine/core';
+import Header from "@/app/components/Header";
 export default function Home() {
   const [user, setUser] = useState<any>();
   const router = useRouter();
@@ -24,11 +24,13 @@ export default function Home() {
 
   return (
     <main>
-      <div className="">
+      <div className="m-4">
         <Header />
-      
+      <div className="m-2"></div>
+     < Paper shadow="xl" radius="lg" p="xs" withBorder>
         <OrderCreate dist_code={user ? user.dist_code : 0} />
-        {/* <Products dist_code={user ? user.dist_code : 0} /> */}
+     </Paper>
+   
       </div>
     </main>
   );

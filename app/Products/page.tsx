@@ -4,8 +4,8 @@ import { logout, me } from "../actions/actions";
 import { useRouter } from "next/navigation";
 import {  Paper } from '@mantine/core';
 
-import SearchProducts from "@/compnents/SearchProducts";
-import Header from "@/compnents/Header";
+import SearchProducts from "@/app/components/SearchProducts";
+import Header from "@/app/components/Header";
 function Products() {
     const [user, setUser] = useState<any>();
     const router = useRouter();
@@ -28,6 +28,7 @@ function Products() {
      <Paper shadow="xl" radius="lg" p="xs" withBorder>
 
         <SearchProducts dist_code={user ? user.dist_code : 0} />
+        
         </Paper>
         </div>
     </>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react";
-import { logout, me } from  "../app/actions/actions";;
+import { logout, me } from  "../actions/actions";;
 import { useRouter } from "next/navigation";
 import { ActionIcon,Paper } from "@mantine/core";
 import { IconBook, IconDoorExit } from "@tabler/icons-react";
@@ -18,9 +18,12 @@ function Header() {
       });
     }, []);
   return (
-    <main className=' '>
-  <Paper shadow="xl" radius="lg" p="xs" withBorder>
-<span className=" flex flex-row ">
+    <main className=' w-98'>
+  <Paper shadow="xl" radius="lg"  withBorder>
+      <div className="m-4 w-98">
+      <div className='flex justify-center '> Welcome to Ebook <IconBook /></div>
+      </div>
+<div className=" flex justify-between p-4 ">
 
         @{user && user.username}
         <ActionIcon
@@ -30,13 +33,10 @@ function Header() {
             }}
           variant="filled"
         >
-          <IconDoorExit size="1rem"  color='black'/>
+          <IconDoorExit  size="1.2rem"  color='black'/>
         </ActionIcon>
-      </span>
-            </Paper>
-      <div className="m-4 text-center bg-black  w-98">
-        <IconBook /> <span className="w-2 h-2 "></span> Welcome to Ebook
       </div>
+            </Paper>
     </main>
   )
 }
