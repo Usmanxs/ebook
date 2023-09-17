@@ -1,3 +1,4 @@
+"use client"
 // Import statements...
 import { useState, useEffect } from "react";
 import {
@@ -5,7 +6,7 @@ import {
   getAreaBySector,
   getCustumer,
 } from "../actions/actions";
-import { useRouter } from "next/navigation";
+
 
 import {
   Text,
@@ -15,9 +16,11 @@ import {
   Text as MantineText,
 } from "@mantine/core"; // Import statements...
 
+
 interface OrderCreateProps {
   dist_code: number;
   onCustomerNameChange:any;
+  onCustomerId:any;
 }
 
 interface Sector {
@@ -35,14 +38,14 @@ interface Customer {
   name: string;
 }
 
-export default function OrderCreate({ dist_code,  onCustomerNameChange }: OrderCreateProps) {
+export default function OrderCreate({ dist_code,  onCustomerNameChange ,onCustomerId}: OrderCreateProps) {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
-  const router = useRouter();
+
 
   useEffect(() => {
     async function fetchSectors() {
@@ -140,13 +143,17 @@ export default function OrderCreate({ dist_code,  onCustomerNameChange }: OrderC
         "Please select a sector, area, and customer before creating an order."
       );
     } else {
-      
+         
+
+      // Define the state object to pass along with the route
+     
       // Access the selected sector's name
       // Access the selected customer's name
-       const sectorName = sectors.find((sector) => sector.seccd === selectedSector)?.name;
-      const areaName = areas.find((area) => area.areacd === selectedArea)?.name;
+    
       const customerName = customers.find((customer) => customer.id === selectedCustomer)?.name;
-      onCustomerNameChange(customerName,customers);
+      onCustomerNameChange(customerName);
+      onCustomerId(selectedCustomer);
+      
     }
     
   };

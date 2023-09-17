@@ -160,3 +160,17 @@ model user_role {
   role_id Int    @id @default(autoincrement())
   role    String @db.VarChar(50)
 }
+
+
+
+model order {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  dist_code     Int
+  accountId     Int
+  cart          Json
+  totalProducts Int 
+  totalPrice    Int
+  createdAt     DateTime  @default(now())
+
+}

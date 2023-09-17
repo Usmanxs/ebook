@@ -5,24 +5,28 @@ interface CartProps {
   cart: any[];
   updateCartItem: (itemIndex: number, updatedItem: any) => void;
   deleteCartItem: (itemIndex: number) => void;
-}
-
-const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem }) => {
+  Allprice:any
+} 
+const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem,Allprice}) => {
+  
   const [totalPrice, setTotalPrice] = useState<number>(0);
-
+ 
   useEffect(() => {
     // Calculate the total price whenever the cart or item details change
     const newTotalPrice = cart.reduce((total, item) => {
       const { tp, quantity, discount, bonus } = item;
       const totalPrice = tp * quantity;
       const discountedPrice = totalPrice - discount;
-      const totalPriceWithBonus = discountedPrice + bonus;
+      const totalPriceWithBonus = discountedPrice - bonus;
       return total + totalPriceWithBonus;
     }, 0);
-
+    
+    
+    Allprice(newTotalPrice)
     setTotalPrice(newTotalPrice);
   }, [cart]); return (
     <div>
+    
       <h1 className="text-cente ">Cart</h1>
       <ScrollArea  mah={600}>
 
@@ -98,7 +102,7 @@ const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem }) => 
         <tbody>
           <tr>
             <td>{cart.length}</td>
-            <td>{totalPrice.toFixed(2)}</td>
+            <td>{totalPrice}</td>
           </tr>
         </tbody>
         </Table>    
@@ -112,6 +116,9 @@ function calculateTotal(item: any) {
     const { tp, quantity, discount, bonus } = item;
     const totalPrice = tp * quantity;
     const discountedPrice = totalPrice - discount;
-  const totalPriceWithBonus = discountedPrice + bonus;
+  const totalPriceWithBonus = discountedPrice - bonus;
   return totalPriceWithBonus.toFixed(2);
+  
 }
+
+

@@ -140,3 +140,40 @@ export async function searchProduct( dist_code:number,name: string) {
     return { message: "There was an error." };
   }
 }
+
+export const pushOrder = async ({
+  user_id,
+  dist_code,
+  accountId,
+  cart,
+  totalProducts,
+  totalPrice,
+}: {
+  user_id: number;
+  dist_code: number;
+  accountId: number;
+  cart: any[]; // Replace 'any[]' with the actual type of your cart data
+  totalProducts: number;
+  totalPrice: number;
+}) => {
+  try {
+    // Create the order in the database
+    const order = await db.order.create({
+      data: {
+        user_id,
+        dist_code,
+        accountId,
+        cart: JSON.stringify(cart), // Convert cart data to JSON string
+        totalProducts,
+        totalPrice,
+      },
+    });
+
+    // You can add any additional logic here if needed
+
+    return { success: true, order };
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return { error: "There was an error creating the order." };
+  }
+};

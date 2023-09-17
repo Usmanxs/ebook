@@ -25,16 +25,22 @@ export default function Home() {
       }
     });
   }, []);
-
   const [customerName, setCustomerName] = useState(null);
+  const [customerId, setCustomerId] = useState(null);
   const handleCustomerNameChange = (name:any) => {
     setCustomerName(name);
-  
-   
+
+    
   };
+  const handleCustomerIdChange = (name:any) => {
+    setCustomerId(name);
+  
+    
+  };
+
   return (
     <main>
-           {loader && <Loader  color="dark" variant="dots"></Loader>}
+           {loader && <Loader className="fixed top-0 right-10 bg-white" color="dark" variant="dots"></Loader>}
      <div className="m-4">
       <Paper shadow="xl" radius="lg"  withBorder>
       <div className="m-4 w-98">
@@ -56,8 +62,17 @@ export default function Home() {
             </Paper>
       <div className="m-2"></div>
      < Paper shadow="xl" radius="lg" p="xs" withBorder>
-     { customerName==null&& <OrderCreate dist_code={user ? user.dist_code : 0}  onCustomerNameChange={handleCustomerNameChange} />}
-        { customerName!==null && <SearchProducts dist_code={user ? user.dist_code : 0} customerName={customerName}   onCustomerNameChange={handleCustomerNameChange}/>}
+     { customerName==null&& <OrderCreate dist_code={user ? user.dist_code : 0}  onCustomerNameChange={handleCustomerNameChange} onCustomerId={handleCustomerIdChange} />}
+     {customerName !== null && (
+  <SearchProducts
+    dist_code={(user && user.username) ? user.dist_code : 0}
+    user_id = {user.user_id}
+    customerName={customerName}
+    accountId= {customerId}
+    onCustomerNameChange={handleCustomerNameChange}
+  />
+)}
+
      </Paper>
    
       </div>

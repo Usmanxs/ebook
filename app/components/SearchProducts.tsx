@@ -1,31 +1,35 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button, TextInput, Table, Loader, ScrollArea } from "@mantine/core";
-import { searchProduct } from "../actions/actions";
+import { searchProduct ,pushOrder} from "../actions/actions";
 import { IconShoppingBagCheck, IconBackspace,} from "@tabler/icons-react";
 import Cart from "./Cart";
 
 interface ProductProps {
+  user_id:number
   dist_code: number; // Pass dist_code as a prop from the parent component
-  customerName:any;
+  customerName:String;
   onCustomerNameChange:any;
+  accountId:any;
+ 
 }
 
-function Products({ dist_code ,customerName , onCustomerNameChange }: ProductProps) {
+
+function Products({  dist_code ,customerName , onCustomerNameChange ,accountId,user_id}: ProductProps) {
+
   const [search, setSearch] = useState<string>("");
   const [loader, setLoader] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [cart, setCart] = useState<any[]>([]);
-  const [scrolled, setScrolled] = useState(false);
   const [openCart,setOpenCart] = useState(false)
-  // State for the pop-up dialog
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [discount, setDiscount] = useState<number>(0);
   const [bonus, setBonus] = useState<number>(0);
-
-  // Function to open the pop-up dialog
+  const [orderpopup ,setOrderpopup]=useState(false)
+  const [totalPrice,setTotalPrice]=useState<number>(0);
+ 
   const openPopup = (product: any) => {
     setSelectedProduct(product);
     setShowPopup(true);
@@ -102,6 +106,34 @@ function Products({ dist_code ,customerName , onCustomerNameChange }: ProductPro
     setCart(updatedCart);
   };
 
+  const handleCart = () => {
+    setOrderpopup(true)
+  
+  }
+  const totalProducts= cart.length;
+  const Allprice = (e:any)=>{
+    setTotalPrice(e)
+    
+  }
+  const handleSubmit = async () => {
+    try {
+      await pushOrder({
+        user_id,
+        dist_code,
+        accountId,
+        cart,
+        totalProducts,
+        totalPrice,
+      });
+      
+    } catch (error) {
+      // Handle the error
+      console.error('Error pushing order to database:', error);
+    }
+    setOrderpopup(false)
+  };
+ 
+
 
   return (
     <div>
@@ -111,7 +143,7 @@ function Products({ dist_code ,customerName , onCustomerNameChange }: ProductPro
        <div className="flex  justify-between m-5">
         <Button className="bg-black m-2" onClick={() => onCustomerNameChange(null)}> <IconBackspace/></Button>
     
-        <div><Button className="bg-black m-0" onClick={() => {setOpenCart(true)}}><IconShoppingBagCheck> </IconShoppingBagCheck>{cart.length}</Button>
+        <div><Button className="bg-black m-2" onClick={() => {setOpenCart(true)}}><IconShoppingBagCheck> </IconShoppingBagCheck>{cart.length}</Button>
         </div>
 
        </div>
@@ -128,7 +160,7 @@ function Products({ dist_code ,customerName , onCustomerNameChange }: ProductPro
           </div>
 
           <div className="overflow-x-auto">
-            <ScrollArea h={600} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+            <ScrollArea h={600} >
               <Table striped highlightOnHover miw={450}>
                 <thead>
                   <tr>
@@ -170,14 +202,16 @@ function Products({ dist_code ,customerName , onCustomerNameChange }: ProductPro
             <p className="flex justify-between gap-2">Product:<span> {selectedProduct?.name}</span></p>
             <p className="flex justify-between">Price: <span>{selectedProduct?.tp}</span></p>
            <br />
-            <p className="flex justify-between m-2">Quantity:   
-              
-            <input   className="w-12"
+            <p className="flex justify-between m-2 ">Quantity:   
+        
+
+            <input   className="w-12 "
               type="number"
               placeholder="Quantity"
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
               />
+             
               </p>
             <p className="flex justify-between m-2">Discount
           <span> <input 
@@ -207,14 +241,35 @@ function Products({ dist_code ,customerName , onCustomerNameChange }: ProductPro
       {/* Pop-up dialog */}
         
         
-      {openCart== true && <div className=" ">
+      {openCart== true && <div >
       <div className="flex  justify-between m-5">   
       <Button className="bg-black m-2" onClick={() => {setOpenCart(false)}}> <IconBackspace/></Button>
-      <Button className="flex justify-end m-2 bg-black">Confirm</Button>
+      <Button className="flex justify-end m-2 bg-black"  onClick={handleCart}>Confirm</Button>
       </div>
-        <Cart cart={cart} updateCartItem={updateCartItem} deleteCartItem={deleteCartItem} />
+        <Cart cart={cart} updateCartItem={updateCartItem} deleteCartItem={deleteCartItem} Allprice={Allprice}/>
       </div>}
-    
+
+      { orderpopup &&<div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-8 rounded-lg shadow-lg">
+      <h2 className="text-xl font-semibold">Confirm the Order</h2>
+     
+      <p className="flex justify-between gap-2">
+        Total Products:<span> {totalProducts}</span>
+      </p>
+      <p className="flex justify-between">
+        Total Price: <span>{totalPrice}</span>
+      </p>
+      <br />
+
+      <Button className="bg-black m-2" uppercase onClick={()=>{setOrderpopup(false)}}>
+        Cancel
+      </Button>
+      <Button className="bg-black m-2" uppercase onClick={()=>{handleSubmit()}}>
+        
+        Submit
+      </Button>
+    </div>
+  </div>}
     </div>
   );
 }
