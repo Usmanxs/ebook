@@ -85,9 +85,9 @@ export default function Login() {
   }, []);
 
   return (
-    <div>
+    <div className="m-4">
       <div className="w-full h-36"></div>
-      <Paper p="xl">
+      <Paper shadow="xl" radius="lg" p="xs" withBorder>
         <Text size="lg" weight={500}>
           Ebook Login
         </Text>
@@ -146,7 +146,7 @@ export default function Login() {
           <Button
             type="submit"
             variant="primary"
-            className="bg-black text-white"
+            className="bg-black text-white mb-2"
           >
             Login
           </Button>
