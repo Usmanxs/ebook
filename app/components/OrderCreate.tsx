@@ -1,12 +1,7 @@
-"use client"
+"use client";
 // Import statements...
 import { useState, useEffect } from "react";
-import {
-  getSectors,
-  getAreaBySector,
-  getCustumer,
-} from "../actions/actions";
-
+import { getSectors, getAreaBySector, getCustumer } from "../actions/actions";
 
 import {
   Text,
@@ -16,11 +11,10 @@ import {
   Text as MantineText,
 } from "@mantine/core"; // Import statements...
 
-
 interface OrderCreateProps {
   dist_code: number;
-  onCustomerNameChange:any;
-  onCustomerId:any;
+  onCustomerNameChange: any;
+  onCustomerId: any;
 }
 
 interface Sector {
@@ -38,14 +32,17 @@ interface Customer {
   name: string;
 }
 
-export default function OrderCreate({ dist_code,  onCustomerNameChange ,onCustomerId}: OrderCreateProps) {
+export default function OrderCreate({
+  dist_code,
+  onCustomerNameChange,
+  onCustomerId,
+}: OrderCreateProps) {
   const [sectors, setSectors] = useState<Sector[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
-
 
   useEffect(() => {
     async function fetchSectors() {
@@ -143,19 +140,12 @@ export default function OrderCreate({ dist_code,  onCustomerNameChange ,onCustom
         "Please select a sector, area, and customer before creating an order."
       );
     } else {
-         
-
-      // Define the state object to pass along with the route
-     
-      // Access the selected sector's name
-      // Access the selected customer's name
-    
-      const customerName = customers.find((customer) => customer.id === selectedCustomer)?.name;
+      const customerName = customers.find(
+        (customer) => customer.id === selectedCustomer
+      )?.name;
       onCustomerNameChange(customerName);
       onCustomerId(selectedCustomer);
-      
     }
-    
   };
 
   return (

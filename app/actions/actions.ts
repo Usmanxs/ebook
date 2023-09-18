@@ -127,10 +127,10 @@ export async function getCustumer({
     return { message: "There was an error." };
   }
 }
-export async function searchProduct( dist_code:number,name: string) {
+export async function searchProduct(dist_code: number, name: string) {
   try {
     return db.product.findMany({
-      take:100,
+      take: 100,
       where: {
         dist_code,
         name: { contains: name },
@@ -175,5 +175,37 @@ export const pushOrder = async ({
   } catch (error) {
     console.error("Error creating order:", error);
     return { error: "There was an error creating the order." };
+  }
+};
+
+export const fetchOrders = async () => {
+  try {
+    const orders = await db.order.findMany();
+    return { success: true, orders };
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return { error: "There was an error fetching orders." };
+  }
+};
+// Import necessary modules and db instance
+
+export const getUser = async (user_id: number) => {
+  try {
+    const user = await db.user.findFirst({
+      where: { user_id },
+      select: {
+        user_id: true,
+        username: true,
+      },
+    });
+
+    if (!user) {
+      return { error: "User not found!" };
+    }
+
+    return { success: true, user };
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return { error: "There was an error fetching user information." };
   }
 };

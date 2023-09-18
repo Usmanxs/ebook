@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import { logout, me } from "./actions/actions";
 import { useRouter } from "next/navigation";
-import { ActionIcon,Paper ,Loader} from "@mantine/core";
-import { IconBook, IconDoorExit } from "@tabler/icons-react";
+import { ActionIcon, Paper, Loader, Button } from "@mantine/core";
+import { IconBook, IconDoorExit, IconHistoryToggle } from "@tabler/icons-react";
 import OrderCreate from "./components/OrderCreate";
 import SearchProducts from "./components/SearchProducts";
-
 
 export default function Home() {
   const [loader, setLoader] = useState(false);
@@ -27,54 +26,79 @@ export default function Home() {
   }, []);
   const [customerName, setCustomerName] = useState(null);
   const [customerId, setCustomerId] = useState(null);
-  const handleCustomerNameChange = (name:any) => {
+  const handleCustomerNameChange = (name: any) => {
     setCustomerName(name);
-
-    
   };
-  const handleCustomerIdChange = (name:any) => {
+  const handleCustomerIdChange = (name: any) => {
     setCustomerId(name);
-  
-    
   };
 
   return (
     <main>
-           {loader && <Loader className="fixed top-0 right-10 bg-white" color="dark" variant="dots"></Loader>}
-     <div className="m-4">
-      <Paper shadow="xl" radius="lg"  withBorder>
-      <div className="m-4 w-98">
-      <div className='flex justify-center '> Welcome to Ebook <IconBook /></div>
-      </div>
-<div className=" flex justify-between p-4 ">
+      {loader && (
+        <Loader
+          className="fixed top-0 right-10 bg-white"
+          color="dark"
+          variant="dots"
+        ></Loader>
+      )}
+      <div className="m-4">
+        <Paper shadow="xl" radius="lg" withBorder>
+        <div className=" flex justify-between p-4 ">
+            
+            @{user && user.username}
+            
+            <ActionIcon
+              onClick={() => {
+                logout();
+                router.push("/login");
+              }}
+              variant="filled"
+            >
 
-        @{user && user.username}
-        <ActionIcon
-          onClick={() => {
-              logout();
-              router.push("/login");
+              <IconDoorExit size="1.2rem" color="black" />
+            </ActionIcon>
+          </div>
+          <div className="m-4 w-98">
+            <div className="flex justify-center ">
+              {" "}
+              Welcome to Ebook <IconBook />
+            </div>  
+          </div>
+          <div className="flex justify-end m-2">
+        <Button
+            variant="primary"
+            className="bg-black text-white flex justify-end m-2"
+            onClick={() => {
+              router.push("/History");
             }}
-          variant="filled"
-        >
-          <IconDoorExit  size="1.2rem"  color='black'/>
-        </ActionIcon>
-      </div>
-            </Paper>
-      <div className="m-2"></div>
-     < Paper shadow="xl" radius="lg" p="xs" withBorder>
-     { customerName==null&& <OrderCreate dist_code={user ? user.dist_code : 0}  onCustomerNameChange={handleCustomerNameChange} onCustomerId={handleCustomerIdChange} />}
-     {customerName !== null && (
-  <SearchProducts
-    dist_code={(user && user.username) ? user.dist_code : 0}
-    user_id = {user.user_id}
-    customerName={customerName}
-    accountId= {customerId}
-    onCustomerNameChange={handleCustomerNameChange}
-  />
-)}
-
-     </Paper>
-   
+            >
+            <IconHistoryToggle />
+          </Button>
+            </div> 
+        
+          
+        </Paper>
+        <div className="m-2"></div>
+        <Paper shadow="xl" radius="lg" p="xs" withBorder>
+        
+          {customerName == null && (
+            <OrderCreate
+              dist_code={user ? user.dist_code : 0}
+              onCustomerNameChange={handleCustomerNameChange}
+              onCustomerId={handleCustomerIdChange}
+            />
+          )}
+          {customerName !== null && (
+            <SearchProducts
+              dist_code={user && user.username ? user.dist_code : 0}
+              user_id={user.user_id}
+              customerName={customerName}
+              accountId={customerId}
+              onCustomerNameChange={handleCustomerNameChange}
+            />
+          )}
+        </Paper>
       </div>
     </main>
   );

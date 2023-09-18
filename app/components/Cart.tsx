@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table,ScrollArea } from "@mantine/core";
+import { Button, Table, ScrollArea } from "@mantine/core";
 
 interface CartProps {
   cart: any[];
   updateCartItem: (itemIndex: number, updatedItem: any) => void;
   deleteCartItem: (itemIndex: number) => void;
-  Allprice:any
-} 
-const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem,Allprice}) => {
-  
+  Allprice: any;
+}
+const Cart: React.FC<CartProps> = ({
+  cart,
+  updateCartItem,
+  deleteCartItem,
+  Allprice,
+}) => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
- 
+
   useEffect(() => {
     // Calculate the total price whenever the cart or item details change
     const newTotalPrice = cart.reduce((total, item) => {
@@ -20,83 +24,94 @@ const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem,Allpri
       const totalPriceWithBonus = discountedPrice - bonus;
       return total + totalPriceWithBonus;
     }, 0);
-    
-    
-    Allprice(newTotalPrice)
-    setTotalPrice(newTotalPrice);
-  }, [cart]); return (
-    <div>
-    
-      <h1 className="text-cente ">Cart</h1>
-      <ScrollArea  mah={600}>
 
-      <Table striped highlightOnHover miw={450}>
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Discount</th>
-            <th>Bonus</th>
-            <th>Total</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cart.map((item: any, index: number) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>{item.tp}</td>
-              <td>
-                <input
-                className="w-12"
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => {
-                      const updatedItem = { ...item, quantity: Number(e.target.value) };
-                      updateCartItem(index, updatedItem);
-                  }}
-                />
-              </td>
-              <td>
-                <input
-                     className="w-12"
-                  type="number"
-                  value={item.discount}
-                  onChange={(e) => {
-                      const updatedItem = { ...item, discount: Number(e.target.value) };
-                      updateCartItem(index, updatedItem);
-                    }}
-                    />
-              </td>
-              <td>
-                <input
-                     className="w-12"
-                  type="number"
-                  value={item.bonus}
-                  onChange={(e) => {
-                      const updatedItem = { ...item, bonus: Number(e.target.value) };
-                      updateCartItem(index, updatedItem);
-                    }}
-                    />
-              </td>
-              <td>{calculateTotal(item)}</td>
-              <td>
-                <Button variant="light" compact onClick={() => deleteCartItem(index)} color="red">
-                  Delete
-                </Button>
-              </td>
+    setTotalPrice(newTotalPrice);
+  }, [cart]);
+
+  return (
+    <div>
+      <h1 className="text-cente ">Cart</h1>
+      <ScrollArea mah={600}>
+        <Table striped highlightOnHover miw={450}>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Discount</th>
+              <th>Bonus</th>
+              <th>Total</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-</ScrollArea>
- <Table>
- <thead>
+          </thead>
+          <tbody>
+            {cart.map((item: any, index: number) => (
+              <tr key={index}>
+                <td>{item.name}</td>
+                <td>{item.tp}</td>
+                <td>
+                  <input
+                    className="w-12"
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => {
+                      const updatedItem = {
+                        ...item,
+                        quantity: Number(e.target.value),
+                      };
+                      updateCartItem(index, updatedItem);
+                    }}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="w-12"
+                    type="number"
+                    value={item.discount}
+                    onChange={(e) => {
+                      const updatedItem = {
+                        ...item,
+                        discount: Number(e.target.value),
+                      };
+                      updateCartItem(index, updatedItem);
+                    }}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="w-12"
+                    type="number"
+                    value={item.bonus}
+                    onChange={(e) => {
+                      const updatedItem = {
+                        ...item,
+                        bonus: Number(e.target.value),
+                      };
+                      updateCartItem(index, updatedItem);
+                    }}
+                  />
+                </td>
+                <td>{calculateTotal(item)}</td>
+                <td>
+                  <Button
+                    variant="light"
+                    compact
+                    onClick={() => deleteCartItem(index)}
+                    color="red"
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </ScrollArea>
+      <Table>
+        <thead>
           <tr>
             <th> Total Products</th>
             <th>Total Price</th>
-
           </tr>
         </thead>
         <tbody>
@@ -105,7 +120,7 @@ const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem,Allpri
             <td>{totalPrice}</td>
           </tr>
         </tbody>
-        </Table>    
+      </Table>
     </div>
   );
 };
@@ -113,12 +128,9 @@ const Cart: React.FC<CartProps> = ({ cart, updateCartItem, deleteCartItem,Allpri
 export default Cart;
 
 function calculateTotal(item: any) {
-    const { tp, quantity, discount, bonus } = item;
-    const totalPrice = tp * quantity;
-    const discountedPrice = totalPrice - discount;
+  const { tp, quantity, discount, bonus } = item;
+  const totalPrice = tp * quantity;
+  const discountedPrice = totalPrice - discount;
   const totalPriceWithBonus = discountedPrice - bonus;
   return totalPriceWithBonus.toFixed(2);
-  
 }
-
-
