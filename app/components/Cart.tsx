@@ -16,7 +16,7 @@ const Cart: React.FC<CartProps> = ({
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
-    // Calculate the total price whenever the cart or item details change
+   
     const newTotalPrice = cart.reduce((total, item) => {
       const { tp, quantity, discount, bonus } = item;
       const totalPrice = tp * quantity;
@@ -24,10 +24,10 @@ const Cart: React.FC<CartProps> = ({
       const totalPriceWithBonus = discountedPrice - bonus;
       return total + totalPriceWithBonus;
     }, 0);
-
     setTotalPrice(newTotalPrice);
   }, [cart]);
-
+  Allprice(totalPrice)
+  
   return (
     <div>
       <h1 className="text-cente ">Cart</h1>
