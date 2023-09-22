@@ -18,11 +18,11 @@ const Cart: React.FC<CartProps> = ({
   useEffect(() => {
    
     const newTotalPrice = cart.reduce((total, item) => {
-      const { tp, quantity, discount, bonus } = item;
+      const { tp, quantity, discount} = item;
       const totalPrice = tp * quantity;
       const discountedPrice = totalPrice - discount;
-      const totalPriceWithBonus = discountedPrice - bonus;
-      return total + totalPriceWithBonus;
+  
+      return total + discountedPrice;
     }, 0);
     setTotalPrice(newTotalPrice);
   }, [cart]);
@@ -30,9 +30,9 @@ const Cart: React.FC<CartProps> = ({
   
   return (
     <div>
-      <h1 className="text-cente ">Cart</h1>
+      <h1 className="flex text-center ">Cart</h1>
       <ScrollArea mah={600}>
-        <Table striped highlightOnHover miw={450}>
+        <Table striped highlightOnHover miw={350}>
           <thead>
             <tr>
               <th>Product Name</th>
@@ -128,9 +128,9 @@ const Cart: React.FC<CartProps> = ({
 export default Cart;
 
 function calculateTotal(item: any) {
-  const { tp, quantity, discount, bonus } = item;
+  const { tp, quantity, discount } = item;
   const totalPrice = tp * quantity;
   const discountedPrice = totalPrice - discount;
-  const totalPriceWithBonus = discountedPrice - bonus;
+  const totalPriceWithBonus = discountedPrice ;
   return totalPriceWithBonus.toFixed(2);
 }

@@ -7,7 +7,7 @@ import Cart from "./Cart";
 
 interface ProductProps {
   user_id: number;
-  dist_code: number; // Pass dist_code as a prop from the parent component
+  dist_code: number; 
   customerName: String;
   onCustomerNameChange: any;
   accountId: any;
@@ -27,25 +27,29 @@ function Products({
   const [openCart, setOpenCart] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-  const [quantity, setQuantity] = useState<number>(1);
-  const [discount, setDiscount] = useState<number>(0);
-  const [bonus, setBonus] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>();
+  const [discount, setDiscount] = useState<number>();
+  const [bonus, setBonus] = useState<number>();
   const [orderpopup, setOrderpopup] = useState(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const openPopup = (product: any) => {
+    window.addEventListener('keydown', e=>{quantity});
     setSelectedProduct(product);
     setShowPopup(true);
   };
+   
 
-  // Function to close the pop-up dialog
   const closePopup = () => {
     setShowPopup(false);
     setSelectedProduct(null);
-    setQuantity(1);
-    setDiscount(0);
-    setBonus(0);
+    setQuantity(undefined);
+    setDiscount(undefined);
+    setBonus(undefined);
+    
   };
+
+
 
   useEffect(() => {
     // Fetch products based on dist_code and search query
@@ -64,8 +68,8 @@ function Products({
   }, [search]);
 
   const addToCart = () => {
-    if (selectedProduct) {
-      // Check if the product is already in the cart
+    if (selectedProduct && quantity!=null && discount!=null && bonus!=null) {
+      
       const existingCartItemIndex = cart.findIndex(
         (item) => item.ID === selectedProduct.ID
       );
@@ -82,7 +86,7 @@ function Products({
 
         setCart(updatedCart);
       } else {
-        // Product is not in the cart, add it
+
         const cartItem = {
           ...selectedProduct,
           quantity,
@@ -106,7 +110,6 @@ function Products({
   };
 
   const deleteCartItem = (itemIndex: number) => {
-    // Remove the cart item at the specified index
     const updatedCart = cart.filter((_, index) => index !== itemIndex);
     setCart(updatedCart);
   };
@@ -139,6 +142,7 @@ function Products({
       console.error("Error pushing order to database:", error);
     }
   };
+  
 
   return (
     <div>
@@ -175,6 +179,7 @@ function Products({
                 <TextInput
                   className="w-full"
                   placeholder="Search Medicine"
+
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -183,30 +188,30 @@ function Products({
 
               <div className="overflow-x-auto">
                 <ScrollArea h={600}>
-                  <Table striped highlightOnHover miw={450}>
+                  <Table striped highlightOnHover miw={350}>
                     <thead>
                       <tr>
+                        <th className="border-gray-500 p-3">Action</th>
                         <th className="border-gray-500 p-3">Product Name</th>
                         <th className="border-gray-500 p-3">Price</th>
                         <th className="border-gray-500 p-3">Stock</th>
-                        <th className="border-gray-500 p-3">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {products.map((p: any) => (
                         <tr key={p.ID}>
+                            <Button
+                              compact
+                              uppercase
+                              onClick={() => openPopup(p )} 
+                              className=" bg-black text-white m-2"
+                            >
+                              ADD
+                            </Button>
                           <td className="border-b p-3">{p.name}</td>
                           <td className="border-b p-3">{p.tp}</td>
                           <td className="border-b p-3">{p.balance}</td>
                           <td className="border-b p-3">
-                            <Button
-                              compact
-                              uppercase
-                              onClick={() => openPopup(p)} // Open the pop-up dialog
-                              className=" bg-black text-white"
-                            >
-                              ADD
-                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -228,16 +233,22 @@ function Products({
                   Price: <span>{selectedProduct?.tp}</span>
                 </p>
                 <br />
-                <p className="flex justify-between m-2 ">
+               <p className="flex justify-between m-2 ">
                   Quantity:
+                 
+
+
                   <input
                     className="w-12 "
                     type="number"
                     placeholder="Quantity"
                     value={quantity}
+                    autoFocus
+                   required
                     onChange={(e) => setQuantity(Number(e.target.value))}
-                  />
+                    />
                 </p>
+              
                 <p className="flex justify-between m-2">
                   Discount
                   <span>
@@ -246,11 +257,14 @@ function Products({
                       className="w-12"
                       type="number"
                       placeholder="Discount"
+                     
                       value={discount}
                       onChange={(e) => setDiscount(Number(e.target.value))}
+                      required
                     />
                   </span>
                 </p>
+         
                 <p className="flex justify-between m-2">
                   {" "}
                   Bonus
@@ -261,10 +275,11 @@ function Products({
                       placeholder="Bonus"
                       value={bonus}
                       onChange={(e) => setBonus(Number(e.target.value))}
+                      required
                     />
                   </span>
                 </p>
-
+           
                 <div className="flex justify-center mt-2">
                   <Button
                     className="bg-black m-2"
@@ -276,6 +291,7 @@ function Products({
                   <Button
                     className="bg-black m-2"
                     uppercase
+              
                     onClick={addToCart}
                   >
                     Submit
@@ -286,7 +302,7 @@ function Products({
           )}
         </div>
       )}
-      {/* Pop-up dialog */}
+    
 
       {openCart == true && (
         <div>

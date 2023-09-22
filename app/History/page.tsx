@@ -6,7 +6,7 @@ import OrderList from "../components/OrderList";
 function page() {
   return (
     <div className="m-2 w-98">
-    <Paper shadow="xl" radius="lg" p="xs" withBorder>
+    <Paper shadow="xl" radius="lg"  withBorder>
         <OrderList />
       </Paper>
     </div>

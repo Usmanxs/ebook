@@ -32,7 +32,7 @@ interface Customer {
   name: string;
 }
 
-export default function OrderCreate({
+export  default function OrderCreate({
   dist_code,
   onCustomerNameChange,
   onCustomerId,
@@ -43,7 +43,7 @@ export default function OrderCreate({
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
-
+  
   useEffect(() => {
     async function fetchSectors() {
       try {
