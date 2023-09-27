@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Ebook",
   description: "Buy Medicine Fast !",
+  manifest:"/manifest.webmanifest"
 };
 
 export default function RootLayout({
