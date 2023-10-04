@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchOrders, getCustumer, getUser } from "../actions/actions";
 import { useRouter } from "next/navigation";
 import { IconBackspace } from "@tabler/icons-react";
-import { Loader, Table, Button ,ScrollArea } from "@mantine/core";
+import { Loader, Table, Button, ScrollArea } from "@mantine/core";
 
 // Define the type for an order
 interface Order {
@@ -17,31 +17,34 @@ interface Order {
 }
 
 function ProductTable({ products }: { products: any[] }) {
-    return (
-      <Table>
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Discount</th>
-            <th>Bonus</th>
+
+  return (
+    <ScrollArea h={300}>
+    <Table>
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Discount</th>
+          <th>Bonus</th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map((product: any, index: number) => (
+          <tr key={index}>
+            <td>{product.name}</td>
+            <td>{product.tp}</td>
+            <td>{product.quantity}</td>
+            <td>{product.discount}</td>
+            <td>{product.bonus}</td>
           </tr>
-        </thead>
-        <tbody>
-          {products.map((product: any, index: number) => (
-            <tr key={index}>
-              <td>{product.name}</td>
-              <td>{product.tp}</td>
-              <td>{product.quantity}</td>
-              <td>{product.discount}</td>
-              <td>{product.bonus}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    );
-  }
+        ))}
+      </tbody>
+    </Table>
+    </ScrollArea>
+  );
+}
 function formatDateTime(dateTimeString: string): string {
   const inputDate = new Date(dateTimeString);
 
@@ -64,6 +67,8 @@ function OrderList() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false)
+  const [selectedorder, setSelectedorder] = useState<any>()
 
   useEffect(() => {
     // Fetch orders when the component mounts
@@ -87,6 +92,11 @@ function OrderList() {
 
     fetchData();
   }, []);
+  const openPopup = (order: any) => {
+    setSelectedorder(order)
+    setShowPopup(true)
+
+  }
 
   return (
     <div className=" m-2 ">
@@ -110,34 +120,56 @@ function OrderList() {
         </p>
       ) : (
         <ScrollArea h={700}>
-          <Table striped highlightOnHover miw={450}>
+          <Table striped highlightOnHover miw={350}>
             <thead>
               <tr>
-                <th>UserId</th>
+                <th>Created At</th>
+                <th>Created by</th>
                 <th>Customer ID</th>
                 <th>Total Products</th>
                 <th>Total Price</th>
                 <th>Products</th>
-                <th>Created At</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order.id}>
+                  <td>{order.createdAt}</td>
                   <td>{order.user_id}</td>
                   <td>{order.accountId}</td>
                   <td>{order.totalProducts}</td>
                   <td>{order.totalPrice}</td>
-                  <td>
-                    <ProductTable products={order.cart} />
-                  </td>
-                  <td>{order.createdAt}</td>
+                  <Button
+                    className="bg-black m-2"
+                    onClick={() => {
+                      openPopup(order)
+                    }}
+                  >
+                    Details
+                  </Button>
+
                 </tr>
-              ))}
+                  ))}
             </tbody>
           </Table>
         </ScrollArea>
       )}
+
+      {showPopup && (<div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="bg-white p-8 rounded-lg shadow-lg">
+          <Button
+            compact
+            className="bg-black m-2"
+            onClick={() => {
+              setShowPopup(false)
+            }}
+          >
+            Back
+          </Button>
+          <h2 className="text-xl font-semibold text-center m-2">Customer id : {selectedorder.accountId}</h2>
+          <ProductTable products={selectedorder.cart} />
+
+        </div></div>)}
     </div>
   );
 }

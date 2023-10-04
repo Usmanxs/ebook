@@ -18,9 +18,9 @@ const Cart: React.FC<CartProps> = ({
   useEffect(() => {
    
     const newTotalPrice = cart.reduce((total, item) => {
-      const { tp, quantity, discount} = item;
-      const totalPrice = tp * quantity;
-      const discountedPrice = totalPrice - discount;
+      const { productPrice, quantity, discount} = item;
+      const totalPrice = productPrice * quantity;
+      const discountedPrice =  totalPrice - (totalPrice * discount) / 100 ;
   
       return total + discountedPrice;
     }, 0);
@@ -48,12 +48,25 @@ const Cart: React.FC<CartProps> = ({
             {cart.map((item: any, index: number) => (
               <tr key={index}>
                 <td>{item.name}</td>
-                <td>{item.tp}</td>
+                <td>  <input
+                    className="w-12"
+                    type="number"
+                    value={item.productPrice}
+                    onChange={(e) => {
+                      const updatedItem = {
+                        ...item,
+                        productPrice: Number(e.target.value),
+                      };
+                      updateCartItem(index, updatedItem);
+                    }}
+                  /></td>
                 <td>
                   <input
                     className="w-12"
                     type="number"
                     value={item.quantity}
+                    min={1}
+
                     onChange={(e) => {
                       const updatedItem = {
                         ...item,
@@ -66,6 +79,8 @@ const Cart: React.FC<CartProps> = ({
                 <td>
                   <input
                     className="w-12"
+                    min={0}
+                    max={100}
                     type="number"
                     value={item.discount}
                     onChange={(e) => {
@@ -128,8 +143,8 @@ const Cart: React.FC<CartProps> = ({
 export default Cart;
 
 function calculateTotal(item: any) {
-  const { tp, quantity, discount } = item;
-  const totalPrice = tp * quantity;
+  const { productPrice , quantity, discount } = item;
+  const totalPrice = productPrice * quantity;
   const discountedPrice = totalPrice - discount;
   const totalPriceWithBonus = discountedPrice ;
   return totalPriceWithBonus.toFixed(2);

@@ -8,7 +8,7 @@ import {
   PaperProps,
   Button,
   Loader,
-  Autocomplete,
+  NumberInput, // Change Autocomplete to NumberInput
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getDistributers, login, me } from "../actions/actions";
@@ -17,9 +17,8 @@ import { useRouter } from "next/navigation";
 export default function Login() {
   const router = useRouter();
   const [distributors, setDistributors] = useState<
-  { ID: number; dist_code: number; name: string }[]
-  >([]);
-  const [distributorMap, setDistributorMap] = useState({});
+    { dist_code: number }[]
+  >([]); // Updated the state to store only dist_code
   const [errCredentials, setErrCredentials] = useState(false);
   const [loader, setLoader] = useState(false);
 
@@ -28,8 +27,7 @@ export default function Login() {
       dist_code: 0,
       password: "",
       username: "",
-      distributer: "",
-    },
+    }, // Removed "distributer" from initialValues
 
     validate: {
       username: (val) => (val.length > 2 ? null : "Invalid Username"),
@@ -39,6 +37,7 @@ export default function Login() {
           : null,
     },
   });
+
   // when the page loads if already logged in send to home page
   useEffect(() => {
     me().then((result) => {
@@ -50,7 +49,6 @@ export default function Login() {
     dist_code: number;
     password: string;
     username: string;
-    distributer: string;
   }) => {
     const credentials = {
       username: loginFormData.username,
@@ -77,10 +75,7 @@ export default function Login() {
 
   useEffect(() => {
     getDistributers().then((eDistributors) => {
-      setDistributors(eDistributors);
-      for (let d of eDistributors) {
-        setDistributorMap({ ...distributorMap, [d.name]: d.dist_code });
-      }
+      setDistributors(eDistributors.map((e) => ({ dist_code: e.dist_code })));
     });
   }, []);
 
@@ -93,18 +88,14 @@ export default function Login() {
         </Text>
         <div className="w-full h-8"></div>
         <form onSubmit={form.onSubmit((values) => handleLogin(values))}>
-          <Autocomplete
+          <NumberInput
             required
-            label="Distributer"
-            placeholder="distributer"
-            value={form.values.distributer}
-            data={distributors.map((e) => e.name)}
+            label="Distributor Code" // Updated label
+            min={0}
+            placeholder="Distributor Code"
+            value={form.values.dist_code || 0} // Ensure the value is always a number
             onChange={(value) => {
-              form.setFieldValue("distributer", value);
-              form.setFieldValue(
-                "dist_code",
-                distributors.find((e) => e.name === value)?.dist_code as any
-              );
+              form.setFieldValue("dist_code", Number(value)); // Convert the value to a number
             }}
             radius="md"
           />
@@ -112,7 +103,7 @@ export default function Login() {
           <TextInput
             required
             label="Username"
-            placeholder="username"
+            placeholder="Username"
             value={form.values.username}
             onChange={(event) =>
               form.setFieldValue("username", event.currentTarget.value)

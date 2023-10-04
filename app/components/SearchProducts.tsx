@@ -4,6 +4,8 @@ import { Button, TextInput, Table, Loader, ScrollArea } from "@mantine/core";
 import { searchProduct, pushOrder } from "../actions/actions";
 import { IconShoppingBagCheck, IconBackspace } from "@tabler/icons-react";
 import Cart from "./Cart";
+import { useRouter } from "next/navigation";
+
 
 interface ProductProps {
   user_id: number;
@@ -26,26 +28,29 @@ function Products({
   const [cart, setCart] = useState<any[]>([]);
   const [openCart, setOpenCart] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any | null| number>(null);
+  const [productPrice,setProductPrice ] =useState<number>();
   const [quantity, setQuantity] = useState<number>();
   const [discount, setDiscount] = useState<number>();
   const [bonus, setBonus] = useState<number>();
   const [orderpopup, setOrderpopup] = useState(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-
+   const router =useRouter()
   const openPopup = (product: any) => {
-    window.addEventListener('keydown', e=>{quantity});
     setSelectedProduct(product);
+    setProductPrice(product?.tp)
+    window.addEventListener('keydown', e=>{productPrice});
     setShowPopup(true);
   };
-   
-
+  
+  
   const closePopup = () => {
     setShowPopup(false);
     setSelectedProduct(null);
     setQuantity(undefined);
     setDiscount(undefined);
     setBonus(undefined);
+    setProductPrice(undefined)
     
   };
 
@@ -80,6 +85,7 @@ function Products({
         const existingCartItem = updatedCart[existingCartItemIndex];
 
         // Update quantity, discount, and bonus
+        existingCartItem.productPrice
         existingCartItem.quantity += quantity;
         existingCartItem.discount += discount;
         existingCartItem.bonus += bonus;
@@ -89,12 +95,13 @@ function Products({
 
         const cartItem = {
           ...selectedProduct,
+          productPrice,
           quantity,
           discount,
           bonus,
         };
 
-        // Add the product to the cart
+        
         setCart([...cart, cartItem]);
       }
 
@@ -134,7 +141,8 @@ function Products({
         totalPrice,
       });
       setLoader(false);
-      alert("Order is done");
+     
+      router.push('/History')    
       setOrderpopup(false);
     } catch (error) {
       alert(error);
@@ -222,17 +230,27 @@ function Products({
             </div>
           </div>
 
-          {showPopup && (
+          {showPopup &&  (
             <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
               <div className="bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-xl font-semibold">Add to Cart</h2>
-                <p className="flex justify-between gap-2">
+                <h2 className="text-xl font-semibold text-center m-2">Add to Cart</h2>
+                <p className="flex justify-between gap-2 ">
                   Product:<span> {selectedProduct?.name}</span>
                 </p>
-                <p className="flex justify-between">
-                  Price: <span>{selectedProduct?.tp}</span>
+                
+                  <br />
+                <p className="flex justify-between m-2">
+                  Price: 
+                  <input 
+                  className="w-12 "
+                  type="number"
+                  min={0}
+                value={productPrice}
+                  autoFocus
+                  required
+                   onChange={(e) => setProductPrice(Number(e.target.value))}
+                   />
                 </p>
-                <br />
                <p className="flex justify-between m-2 ">
                   Quantity:
                  
@@ -240,10 +258,11 @@ function Products({
 
                   <input
                     className="w-12 "
+                    min={1}
                     type="number"
-                    placeholder="Quantity"
+                    placeholder="1"
                     value={quantity}
-                    autoFocus
+                    
                    required
                     onChange={(e) => setQuantity(Number(e.target.value))}
                     />
@@ -256,7 +275,9 @@ function Products({
                     <input
                       className="w-12"
                       type="number"
-                      placeholder="Discount"
+                      min={0}
+                      max={100}
+                      placeholder="0%"
                      
                       value={discount}
                       onChange={(e) => setDiscount(Number(e.target.value))}
@@ -272,10 +293,12 @@ function Products({
                     <input
                       className="w-12"
                       type="number"
-                      placeholder="Bonus"
+                      placeholder="0"
+                      min={0}
                       value={bonus}
                       onChange={(e) => setBonus(Number(e.target.value))}
                       required
+                      
                     />
                   </span>
                 </p>
