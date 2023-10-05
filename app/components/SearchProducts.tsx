@@ -30,9 +30,9 @@ function Products({
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null| number>(null);
   const [productPrice,setProductPrice ] =useState<number>();
-  const [quantity, setQuantity] = useState<number>();
-  const [discount, setDiscount] = useState<number>();
-  const [bonus, setBonus] = useState<number>();
+  const [quantity, setQuantity] = useState<number>(1);
+  const [discount, setDiscount] = useState<number>(0);
+  const [bonus, setBonus] = useState<number>(0);
   const [orderpopup, setOrderpopup] = useState(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
    const router =useRouter()
@@ -47,9 +47,9 @@ function Products({
   const closePopup = () => {
     setShowPopup(false);
     setSelectedProduct(null);
-    setQuantity(undefined);
-    setDiscount(undefined);
-    setBonus(undefined);
+    setQuantity(1);
+    setDiscount(0);
+    setBonus(0);
     setProductPrice(undefined)
     
   };
