@@ -2,15 +2,16 @@
 // Import statements...
 import { useState, useEffect } from "react";
 import { getSectors, getAreaBySector, getCustumer } from "../actions/actions";
-
+import { IconHistoryToggle } from "@tabler/icons-react";
 import {
   Text,
   Paper,
   Button,
   Select,
+
   Text as MantineText,
 } from "@mantine/core"; // Import statements...
-
+import { useRouter } from "next/navigation";
 interface OrderCreateProps {
   dist_code: number;
   onCustomerNameChange: any;
@@ -43,7 +44,7 @@ export  default function OrderCreate({
   const [selectedSector, setSelectedSector] = useState<number | null>(null);
   const [selectedArea, setSelectedArea] = useState<number | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
-  
+  const router = useRouter();
   useEffect(() => {
     async function fetchSectors() {
       try {
@@ -151,10 +152,21 @@ export  default function OrderCreate({
   return (
     <main>
       <Paper p="xl">
+          <div className=" flex justify-between h-8">
         <Text size="lg" weight={500}>
           Create Order
         </Text>
-        <div className="w-full h-8"></div>
+            <Button
+            variant="primary"
+            className="bg-black text-white flex justify-end"
+            onClick={() => {
+              router.push("/History");
+            }}
+            >
+            <IconHistoryToggle />
+          </Button>
+          </div>
+       
         <form onSubmit={handleCreateOrder}>
           <Select
             required

@@ -30,24 +30,24 @@ const Cart: React.FC<CartProps> = ({
   
   return (
     <div>
-      <h1 className="flex text-center ">Cart</h1>
+      <h1 className="text-center ">Cart</h1>
       <ScrollArea mah={600}>
-        <Table striped highlightOnHover miw={350}>
+        <Table striped highlightOnHover miw={200}>
           <thead>
             <tr>
-              <th>Product Name</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Discount</th>
-              <th>Bonus</th>
-              <th>Total</th>
-              <th>Action</th>
+              <th className="text-xs">Product Name</th>
+              <th className="text-xs">Price</th>
+              <th className="text-xs">Quantity</th>
+              <th className="text-xs">Discount</th>
+              <th className="text-xs">Bonus</th>
+              <th className="text-xs">Total</th>
+              <th className="text-xs">Action</th>
             </tr>
           </thead>
           <tbody>
             {cart.map((item: any, index: number) => (
               <tr key={index}>
-                <td>{item.name}</td>
+                <td className="text-xs">{item.name}</td>
                 <td>  <input
                     className="w-12"
                     type="number"
@@ -62,7 +62,7 @@ const Cart: React.FC<CartProps> = ({
                   /></td>
                 <td>
                   <input
-                    className="w-12"
+                    className="w-4"
                     type="number"
                     value={item.quantity}
                     min={1}
@@ -78,7 +78,7 @@ const Cart: React.FC<CartProps> = ({
                 </td>
                 <td>
                   <input
-                    className="w-12"
+                    className="w-4"
                     min={0}
                     max={100}
                     type="number"
@@ -94,7 +94,7 @@ const Cart: React.FC<CartProps> = ({
                 </td>
                 <td>
                   <input
-                    className="w-12"
+                    className="w-4"
                     type="number"
                     value={item.bonus}
                     onChange={(e) => {

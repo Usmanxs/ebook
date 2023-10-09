@@ -120,27 +120,28 @@ function OrderList() {
         </p>
       ) : (
         <ScrollArea h={700}>
-          <Table striped highlightOnHover miw={350}>
+          <Table striped highlightOnHover miw={200}>
             <thead>
               <tr>
-                <th>Created At</th>
-                <th>Created by</th>
-                <th>Customer ID</th>
-                <th>Total Products</th>
-                <th>Total Price</th>
-                <th>Products</th>
+                <th className="text-xs">Created At</th>
+            
+                <th className="text-xs">Customer ID</th>
+                <th className="text-xs">Total Products</th>
+                <th className="text-xs">Total Price</th>
+                <th className="text-xs">Products</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order.id}>
-                  <td>{order.createdAt}</td>
-                  <td>{order.user_id}</td>
-                  <td>{order.accountId}</td>
-                  <td>{order.totalProducts}</td>
-                  <td>{order.totalPrice}</td>
+                  <td className="text-xs">{order.createdAt}</td>
+                  
+                  <td className="text-xs">{order.accountId}</td>
+                  <td className="text-xs">{order.totalProducts}</td>
+                  <td className="text-xs">{order.totalPrice}</td>
                   <Button
-                    className="bg-black m-2"
+                  compact
+                    className="bg-black mt-2 text-xs"
                     onClick={() => {
                       openPopup(order)
                     }}

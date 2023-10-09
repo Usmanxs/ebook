@@ -48,6 +48,12 @@ export default function Home() {
             
             @{user && user.username}
             
+          
+            <div className="flex justify-center ">
+             
+              Welcome to Ebook <IconBook />
+            </div>  
+
             <ActionIcon
               onClick={() => {
                 logout();
@@ -59,23 +65,7 @@ export default function Home() {
               <IconDoorExit size="1.2rem" color="black" />
             </ActionIcon>
           </div>
-          <div className="m-4 w-98">
-            <div className="flex justify-center ">
-              {" "}
-              Welcome to Ebook <IconBook />
-            </div>  
-          </div>
-          <div className="flex justify-end m-2">
-        <Button
-            variant="primary"
-            className="bg-black text-white flex justify-end m-2"
-            onClick={() => {
-              router.push("/History");
-            }}
-            >
-            <IconHistoryToggle />
-          </Button>
-            </div> 
+         
         
           
         </Paper>

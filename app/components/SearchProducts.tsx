@@ -30,7 +30,7 @@ function Products({
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null| number>(null);
   const [productPrice,setProductPrice ] =useState<number>();
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
   const [bonus, setBonus] = useState<number>(0);
   const [orderpopup, setOrderpopup] = useState(false);
@@ -47,7 +47,7 @@ function Products({
   const closePopup = () => {
     setShowPopup(false);
     setSelectedProduct(null);
-    setQuantity(1);
+    setQuantity(0);
     setDiscount(0);
     setBonus(0);
     setProductPrice(undefined)
@@ -141,8 +141,7 @@ function Products({
         totalPrice,
       });
       setLoader(false);
-     
-      router.push('/History')    
+      onCustomerNameChange(null)   
       setOrderpopup(false);
     } catch (error) {
       alert(error);
@@ -150,25 +149,25 @@ function Products({
       console.error("Error pushing order to database:", error);
     }
   };
-  
+
 
   return (
     <div>
-      <div className="w-98 h-6">
-        {" "}
-        <div className="p-2 flex justify-center"> {customerName}</div>
+      <div className="w-99">
+    
       </div>
       {openCart == false && (
         <div>
-          <div className="flex  justify-between m-5">
+          <div className="flex  justify-between m-2">
             <Button
               className="bg-black m-2"
               onClick={() => onCustomerNameChange(null)}
             >
-              {" "}
+        
               <IconBackspace />
             </Button>
 
+          <div className="p-2 flex justify-center"> {customerName}</div>
             <div>
               <Button
                 className="bg-black m-2"
@@ -196,7 +195,7 @@ function Products({
 
               <div className="overflow-x-auto">
                 <ScrollArea h={600}>
-                  <Table striped highlightOnHover miw={350}>
+                  <Table striped highlightOnHover miw={300}>
                     <thead>
                       <tr>
                         <th className="border-gray-500 p-3">Action</th>
@@ -216,7 +215,7 @@ function Products({
                             >
                               ADD
                             </Button>
-                          <td className="border-b p-3">{p.name}</td>
+                          <td className="border-b text-xs p-3">{p.name}</td>
                           <td className="border-b p-3">{p.tp}</td>
                           <td className="border-b p-3">{p.balance}</td>
                           <td className="border-b p-3">
@@ -239,30 +238,18 @@ function Products({
                 </p>
                 
                   <br />
-                <p className="flex justify-between m-2">
-                  Price: 
-                  <input 
-                  className="w-12 "
-                  type="number"
-                  min={0}
-                value={productPrice}
-                  autoFocus
-                  required
-                   onChange={(e) => setProductPrice(Number(e.target.value))}
-                   />
-                </p>
+              
                <p className="flex justify-between m-2 ">
                   Quantity:
-                 
-
+                
 
                   <input
                     className="w-12 "
-                    min={1}
+                    min={0}
                     type="number"
                     placeholder="1"
                     value={quantity}
-                    
+                    autoFocus
                    required
                     onChange={(e) => setQuantity(Number(e.target.value))}
                     />
@@ -302,7 +289,18 @@ function Products({
                     />
                   </span>
                 </p>
-           
+                <p className="flex justify-between m-2">
+                  Price: 
+                  <input 
+                  className="w-12 "
+                  type="number"
+                  min={0}
+                value={productPrice}
+                 
+                  required
+                   onChange={(e) => setProductPrice(Number(e.target.value))}
+                   />
+                </p>
                 <div className="flex justify-center mt-2">
                   <Button
                     className="bg-black m-2"
