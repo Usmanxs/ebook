@@ -47,12 +47,11 @@ export default function Home() {
         <div className=" flex justify-between p-4 ">
             
             @{user && user.username}
-            
-          
-            <div className="flex justify-center ">
-             
-              Welcome to Ebook <IconBook />
-            </div>  
+        
+             <IconBook />
+       
+
+         
 
             <ActionIcon
               onClick={() => {

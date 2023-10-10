@@ -160,6 +160,7 @@ function Products({
         <div>
           <div className="flex  justify-between m-2">
             <Button
+            compact
               className="bg-black m-2"
               onClick={() => onCustomerNameChange(null)}
             >
@@ -167,9 +168,10 @@ function Products({
               <IconBackspace />
             </Button>
 
-          <div className="p-2 flex justify-center"> {customerName}</div>
+          <div className="p-2 flex justify-center text-xs"> {customerName}</div>
             <div>
               <Button
+              compact
                 className="bg-black m-2"
                 onClick={() => {
                   setOpenCart(true);
@@ -194,14 +196,14 @@ function Products({
               </div>
 
               <div className="overflow-x-auto">
-                <ScrollArea h={600}>
-                  <Table striped highlightOnHover miw={300}>
+              
+                  <Table striped highlightOnHover  withColumnBorders >
                     <thead>
                       <tr>
-                        <th className="border-gray-500 p-3">Action</th>
-                        <th className="border-gray-500 p-3">Product Name</th>
-                        <th className="border-gray-500 p-3">Price</th>
-                        <th className="border-gray-500 p-3">Stock</th>
+                        <th className="border-gray-500 text-xs">Action</th>
+                        <th className="border-gray-500 text-xs p-3">Product Name</th>
+                        <th className="border-gray-500 text-xs p-3">Price</th>
+                        <th className="border-gray-500 text-xs p-3">Stock</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,18 +215,18 @@ function Products({
                               onClick={() => openPopup(p )} 
                               className=" bg-black text-white m-2"
                             >
-                              ADD
+                             +
                             </Button>
-                          <td className="border-b text-xs p-3">{p.name}</td>
-                          <td className="border-b p-3">{p.tp}</td>
-                          <td className="border-b p-3">{p.balance}</td>
-                          <td className="border-b p-3">
+                          <td className="border-b text-xs">{p.name}</td>
+                          <td className="border-b ">{p.tp}</td>
+                          <td className="border-b ">{p.balance}</td>
+                          <td className="border-b ">
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </Table>
-                </ScrollArea>
+      
               </div>
             </div>
           </div>
