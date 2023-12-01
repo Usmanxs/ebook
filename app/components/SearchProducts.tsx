@@ -30,7 +30,7 @@ function Products({
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any | null| number>(null);
   const [productPrice,setProductPrice ] =useState<number>();
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
   const [discount, setDiscount] = useState<number>(0);
   const [bonus, setBonus] = useState<number>(0);
   const [orderpopup, setOrderpopup] = useState(false);
@@ -47,7 +47,7 @@ function Products({
   const closePopup = () => {
     setShowPopup(false);
     setSelectedProduct(null);
-    setQuantity(0);
+    setQuantity(1);
     setDiscount(0);
     setBonus(0);
     setProductPrice(undefined)
@@ -160,7 +160,7 @@ function Products({
         <div>
           <div className="flex  justify-between m-2">
             <Button
-            compact
+            
               className="bg-black m-2"
               onClick={() => onCustomerNameChange(null)}
             >
@@ -171,7 +171,7 @@ function Products({
           <div className="p-2 flex justify-center text-xs"> {customerName}</div>
             <div>
               <Button
-              compact
+           
                 className="bg-black m-2"
                 onClick={() => {
                   setOpenCart(true);
@@ -247,7 +247,7 @@ function Products({
 
                   <input
                     className="w-12 "
-                    min={0}
+                    min={1}
                     type="number"
                     placeholder="1"
                     value={quantity}

@@ -1,5 +1,5 @@
 "use client";
-// Import statements...
+
 import { useState, useEffect } from "react";
 import { getSectors, getAreaBySector, getCustumer } from "../actions/actions";
 import { IconHistoryToggle } from "@tabler/icons-react";
@@ -10,7 +10,7 @@ import {
   Select,
 
   Text as MantineText,
-} from "@mantine/core"; // Import statements...
+} from "@mantine/core"; 
 import { useRouter } from "next/navigation";
 interface OrderCreateProps {
   dist_code: number;

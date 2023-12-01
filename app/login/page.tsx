@@ -80,14 +80,15 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="m-4">
-      <div className="w-full h-36"></div>
-      <Paper shadow="xl" radius="lg" p="xs" withBorder>
+    <div className="m-2 grid justify-center   ">
+      <div className="w-full h-36 "></div>
+      <Paper shadow="xl" radius="lg" p="lg" className="lg:w-80 sm:w-full "  withBorder>
         <Text size="lg" weight={500}>
           Ebook Login
         </Text>
         <div className="w-full h-8"></div>
-        <form onSubmit={form.onSubmit((values) => handleLogin(values))}>
+        <form onSubmit={form.onSubmit((values) => handleLogin(values))}
+       >
           <NumberInput
             required
             label="Distributor Code" // Updated label
@@ -131,8 +132,8 @@ export default function Login() {
             </div>
           )}
 
-          <div className="w-full h-8">
-            {loader && <Loader color="dark" variant="dots"></Loader>}
+          <div className="w-full m-4 ">
+           
           </div>
           <Button
             type="submit"
@@ -141,7 +142,11 @@ export default function Login() {
           >
             Login
           </Button>
+         
+
+          
         </form>
+      {loader && <Loader className="absolute justify-center align-center w-full h-full" color="dark" variant="dots"></Loader>}
       </Paper>
     </div>
   );

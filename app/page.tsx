@@ -47,12 +47,6 @@ export default function Home() {
         <div className=" flex justify-between p-4 ">
             
             @{user && user.username}
-        
-             <IconBook />
-       
-
-         
-
             <ActionIcon
               onClick={() => {
                 logout();
@@ -68,6 +62,7 @@ export default function Home() {
         
           
         </Paper>
+              
         <div className="m-2"></div>
         <Paper shadow="xl" radius="lg" p="xs" withBorder>
         

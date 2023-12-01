@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { IconBackspace } from "@tabler/icons-react";
 import { Loader, Table, Button, ScrollArea } from "@mantine/core";
 
-// Define the type for an order
+
 interface Order {
   id: number;
   user_id: number;
@@ -112,35 +112,29 @@ function OrderList() {
       <div className="flex  justify-center">
         <h1 className="text-center  m-2">Order List</h1>
       </div>
-
       {loading ? (
-        <p>
+        <div className="flex justify-center">
           Loading
           <Loader color="dark" variant="dots" />
-        </p>
+        </div>
+
       ) : (
         <ScrollArea h={700}>
-          <Table striped highlightOnHover miw={200}>
+          <Table striped highlightOnHover miw={250}>
             <thead>
               <tr>
-                <th className="text-xs">Created At</th>
             
-                <th className="text-xs">Customer ID</th>
+                <th className="text-xs">Products</th>
                 <th className="text-xs">Total Products</th>
                 <th className="text-xs">Total Price</th>
-                <th className="text-xs">Products</th>
+                <th className="text-xs">Customer ID</th>
+                <th className="text-xs">Created At</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order.id}>
-                  <td className="text-xs">{order.createdAt}</td>
-                  
-                  <td className="text-xs">{order.accountId}</td>
-                  <td className="text-xs">{order.totalProducts}</td>
-                  <td className="text-xs">{order.totalPrice}</td>
                   <Button
-                  compact
                     className="bg-black mt-2 text-xs"
                     onClick={() => {
                       openPopup(order)
@@ -148,7 +142,12 @@ function OrderList() {
                   >
                     Details
                   </Button>
+                  
+                  <td className="text-xs ">{order.totalProducts}</td>
+                  <td className="text-xs">{order.totalPrice}</td>
+                  <td className="text-xs">{order.accountId}</td>
 
+                  <td className="text-xs">{order.createdAt}</td>
                 </tr>
                   ))}
             </tbody>
@@ -159,13 +158,13 @@ function OrderList() {
       {showPopup && (<div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <Button
-            compact
+          
             className="bg-black m-2"
             onClick={() => {
               setShowPopup(false)
             }}
           >
-            Back
+         <IconBackspace />
           </Button>
           <h2 className="text-xl font-semibold text-center m-2">Customer id : {selectedorder.accountId}</h2>
           <ProductTable products={selectedorder.cart} />
