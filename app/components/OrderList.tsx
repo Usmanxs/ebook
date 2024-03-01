@@ -124,16 +124,22 @@ function OrderList() {
             <thead>
               <tr>
             
-                <th className="text-xs">Products</th>
                 <th className="text-xs">Total Products</th>
                 <th className="text-xs">Total Price</th>
                 <th className="text-xs">Customer ID</th>
                 <th className="text-xs">Created At</th>
+                <th className="text-xs">Products</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order) => (
                 <tr key={order.id}>
+                  
+                  <td className="text-xs ">{order.totalProducts}</td>
+                  <td className="text-xs">{order.totalPrice}</td>
+                  <td className="text-xs">{order.accountId}</td>
+
+                  <td className="text-xs">{order.createdAt}</td>
                   <Button
                     className="bg-black mt-2 text-xs"
                     onClick={() => {
@@ -142,12 +148,6 @@ function OrderList() {
                   >
                     Details
                   </Button>
-                  
-                  <td className="text-xs ">{order.totalProducts}</td>
-                  <td className="text-xs">{order.totalPrice}</td>
-                  <td className="text-xs">{order.accountId}</td>
-
-                  <td className="text-xs">{order.createdAt}</td>
                 </tr>
                   ))}
             </tbody>
