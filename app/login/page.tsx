@@ -74,8 +74,8 @@ export default function Login() {
   };
 
   useEffect(() => {
-    getDistributers().then((eDistributors) => {
-      setDistributors(eDistributors.map((e) => ({ dist_code: e.dist_code })));
+    getDistributers().then((eDistributors:any) => {
+      setDistributors(eDistributors.map((e:any) => ({ dist_code: e.dist_code })));
     });
   }, []);
 
@@ -95,7 +95,7 @@ export default function Login() {
             min={0}
             placeholder="Distributor Code"
             value={form.values.dist_code || 0} // Ensure the value is always a number
-            onChange={(value) => {
+            onChange={(value:any) => {
               form.setFieldValue("dist_code", Number(value)); // Convert the value to a number
             }}
             radius="md"
@@ -106,7 +106,7 @@ export default function Login() {
             label="Username"
             placeholder="Username"
             value={form.values.username}
-            onChange={(event) =>
+            onChange={(event:any) =>
               form.setFieldValue("username", event.currentTarget.value)
             }
             radius="md"

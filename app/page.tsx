@@ -42,7 +42,7 @@ export default function Home() {
           variant="dots"
         ></Loader>
       )}
-      <div className="m-4">
+      <div className="m-8">
         <Paper shadow="xl" radius="lg" withBorder>
         <div className=" flex justify-between p-4 ">
             
@@ -63,7 +63,7 @@ export default function Home() {
           
         </Paper>
               
-        <div className="m-2"></div>
+        <div className="m-8"></div>
         <Paper shadow="xl" radius="lg" p="xs" withBorder>
         
           {customerName == null && (

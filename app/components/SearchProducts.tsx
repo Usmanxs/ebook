@@ -190,7 +190,7 @@ function Products({
                   placeholder="Search Medicine"
 
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e:any) => setSearch(e.target.value)}
                 />
                 {loader && <Loader color="dark" variant="dots"></Loader>}
               </div>
@@ -200,15 +200,19 @@ function Products({
                   <Table striped highlightOnHover  withColumnBorders >
                     <thead>
                       <tr>
-                        <th className="border-gray-500 text-xs">Action</th>
-                        <th className="border-gray-500 text-xs p-3">Product Name</th>
-                        <th className="border-gray-500 text-xs p-3">Price</th>
-                        <th className="border-gray-500 text-xs p-3">Stock</th>
+                        <th className="border-gray-500 text-xs p-2">Product Name</th>
+                        <th className="border-gray-500 text-xs p-2">Price</th>
+                        <th className="border-gray-500 text-xs p-2">Stock</th>
+                        <th className="border-gray-500 text-xs p-2">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {products.map((p: any) => (
                         <tr key={p.ID}>
+                          <td className="border-b w-2	overflow-x-auto ">{p.name}</td>
+                          <td className="border-b sm:w-fit">{p.tp}</td>
+                          <td className="border-b sm:w-fit">{p.balance}</td>
+                          <td className="border-b sm:w-fit ">
                             <Button
                               compact
                               uppercase
@@ -217,10 +221,6 @@ function Products({
                             >
                              +
                             </Button>
-                          <td className="border-b text-xs">{p.name}</td>
-                          <td className="border-b ">{p.tp}</td>
-                          <td className="border-b ">{p.balance}</td>
-                          <td className="border-b ">
                           </td>
                         </tr>
                       ))}
