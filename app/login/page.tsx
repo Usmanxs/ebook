@@ -94,7 +94,7 @@ export default function Login() {
             label="Distributor Code" // Updated label
             min={0}
             placeholder="Distributor Code"
-            value={form.values.dist_code || 0} // Ensure the value is always a number
+            value={form.values.dist_code || 1009} // Ensure the value is always a number
             onChange={(value:any) => {
               form.setFieldValue("dist_code", Number(value)); // Convert the value to a number
             }}
@@ -105,7 +105,7 @@ export default function Login() {
             required
             label="Username"
             placeholder="Username"
-            value={form.values.username}
+            value={form.values.username || "tester"}
             onChange={(event:any) =>
               form.setFieldValue("username", event.currentTarget.value)
             }
@@ -116,7 +116,7 @@ export default function Login() {
             required
             label="Password"
             placeholder="Your password"
-            value={form.values.password}
+            value={form.values.password || 'testing'}
             onChange={(event: any) => {
               form.setFieldValue("password", event.currentTarget.value);
             }}
