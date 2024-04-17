@@ -115,11 +115,12 @@ export default function Login() {
           <PasswordInput
             required
             label="Password"
-            placeholder="Your password"
-            value={form.values.password || 'testing'}
+            placeholder="testing"
+            value={form.values.password }
             onChange={(event: any) => {
               form.setFieldValue("password", event.currentTarget.value);
             }}
+            
             error={
               form.errors.password &&
               "Password should include at least 2 characters"
